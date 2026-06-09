@@ -1,12 +1,12 @@
 ---
 import { categories } from "@/data/categories";
+import Logo from "@/components/Logo.astro";
 ---
 
 <header class="site-header">
   <div class="container header-inner">
     <a class="brand" href="/" aria-label="Abelost home">
-      <span class="brand-mark">A</span>
-      <span>abelost</span>
+      <Logo />
     </a>
     <nav aria-label="Main navigation">
       <a href="/calculators/">All tools</a>
@@ -29,8 +29,7 @@ import { categories } from "@/data/categories";
   }
 
   .header-inner { align-items: center; display: flex; height: 76px; justify-content: space-between; }
-  .brand { align-items: center; display: flex; font-family: "Manrope", sans-serif; font-size: 1.22rem; font-weight: 800; gap: 0.55rem; text-decoration: none; }
-  .brand-mark { align-items: center; background: var(--ink); border-radius: 9px; color: var(--brand); display: inline-flex; height: 32px; justify-content: center; width: 32px; }
+  .brand { align-items: center; display: flex; text-decoration: none; }
   nav { display: flex; gap: 1.6rem; }
   nav a { color: var(--muted); font-size: 0.93rem; font-weight: 600; text-decoration: none; }
   nav a:hover { color: var(--ink); }

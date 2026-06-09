@@ -1,11 +1,12 @@
 ---
 import { categories } from "@/data/categories";
+import Logo from "@/components/Logo.astro";
 ---
 
 <footer>
   <div class="container footer-grid">
     <div>
-      <a class="footer-brand" href="/">abelost<span>.</span></a>
+      <a class="footer-brand" href="/" aria-label="Abelost home"><Logo variant="reverse" /></a>
       <p>Practical calculators for everyday decisions. Clear methods, useful estimates, no account required.</p>
     </div>
     <div>
@@ -34,8 +35,7 @@ import { categories } from "@/data/categories";
 <style>
   footer { background: var(--ink); color: white; padding: 4.5rem 0 1.5rem; }
   .footer-grid { display: grid; gap: 3rem; grid-template-columns: 2fr repeat(3, 1fr); }
-  .footer-brand { font-family: "Manrope", sans-serif; font-size: 2rem; font-weight: 800; text-decoration: none; }
-  .footer-brand span { color: var(--brand); }
+  .footer-brand { display: inline-flex; text-decoration: none; }
   .footer-grid p { color: #aebbb5; max-width: 430px; }
   .footer-grid strong { display: block; font-size: 0.82rem; letter-spacing: 0.08em; margin-bottom: 1rem; text-transform: uppercase; }
   .footer-grid > div:not(:first-child) a { color: #bac4bf; display: block; font-size: 0.92rem; margin: 0.7rem 0; text-decoration: none; }

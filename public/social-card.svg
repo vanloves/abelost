@@ -3,7 +3,8 @@
   <circle cx="1020" cy="100" r="260" fill="#d5ff73" opacity=".13"/>
   <circle cx="180" cy="620" r="300" fill="#65a7ff" opacity=".1"/>
   <rect x="90" y="90" width="70" height="70" rx="18" fill="#d5ff73"/>
-  <text x="113" y="143" font-family="Arial,sans-serif" font-size="46" font-weight="700" fill="#17231f">A</text>
+  <path d="M106 143 121 107h8l15 36h-11l-2.5-7h-11L117 143h-11Zm16.5-15h5l-2.5-7-2.5 7Z" fill="#17231f"/>
+  <path d="M116 149h19" fill="none" stroke="#17231f" stroke-linecap="round" stroke-width="2.5"/>
   <text x="90" y="275" font-family="Arial,sans-serif" font-size="92" font-weight="700" fill="white">Practical calculators.</text>
   <text x="90" y="385" font-family="Arial,sans-serif" font-size="92" font-weight="700" fill="#d5ff73">Clear answers.</text>
   <text x="90" y="500" font-family="Arial,sans-serif" font-size="32" fill="#aebbb5">abelost.com</text>

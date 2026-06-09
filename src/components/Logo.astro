@@ -1,0 +1,72 @@
+---
+interface Props {
+  variant?: "default" | "reverse";
+  compact?: boolean;
+  class?: string;
+}
+
+const {
+  variant = "default",
+  compact = false,
+  class: className
+} = Astro.props;
+---
+
+<span
+  class:list={["logo", `logo--${variant}`, { "logo--compact": compact }, className]}
+  aria-label="Abelost"
+>
+  <svg class="logo-mark" viewBox="0 0 40 40" aria-hidden="true">
+    <rect width="40" height="40" rx="11" class="mark-bg" />
+    <path d="M10 29 18.1 10h3.8L30 29h-5.6l-1.3-3.5h-6.4L15.4 29H10Zm8.5-8.2h3l-1.5-4.3-1.5 4.3Z" class="mark-a" />
+    <path d="M14.5 31.5h11" class="mark-result" />
+  </svg>
+  {!compact && (
+    <svg class="logo-word" viewBox="0 0 128 32" aria-hidden="true">
+      <path
+        class="word-fill"
+        d="M9.2 25.6c-4.7 0-8-3.6-8-8.8s3.3-8.8 8-8.8c2.5 0 4.5 1 5.8 2.8V8.5h5.2v16.6H15v-2.3c-1.3 1.8-3.3 2.8-5.8 2.8Zm1.7-4.4c2.5 0 4.3-1.8 4.3-4.4s-1.8-4.4-4.3-4.4-4.3 1.8-4.3 4.4 1.8 4.4 4.3 4.4ZM29.4 25.1h-5.2V2.4h5.2v8.1C30.7 8.9 32.6 8 35 8c4.7 0 7.9 3.6 7.9 8.8s-3.2 8.8-7.9 8.8c-2.5 0-4.4-1-5.7-2.8v2.3Zm4-3.9c2.5 0 4.3-1.8 4.3-4.4s-1.8-4.4-4.3-4.4-4.2 1.8-4.2 4.4 1.7 4.4 4.2 4.4Zm20.5 4.4c-5.6 0-9.3-3.5-9.3-8.8S48.3 8 53.8 8c5.4 0 8.9 3.4 8.9 8.6 0 .6 0 1.2-.1 1.7H49.8c.4 2.2 2 3.4 4.2 3.4 1.8 0 3.1-.7 3.8-1.9l4.3 1.7c-1.5 2.6-4.3 4.1-8.2 4.1Zm-4.1-10.4h7.8c-.3-2.1-1.8-3.3-3.8-3.3-2.1 0-3.6 1.2-4 3.3Zm20.9 9.9h-5.2V2.4h5.2v22.7Zm12.1.5c-5.5 0-9.4-3.7-9.4-8.8S77.3 8 82.8 8s9.4 3.7 9.4 8.8-3.9 8.8-9.4 8.8Zm0-4.4c2.5 0 4.2-1.8 4.2-4.4s-1.7-4.4-4.2-4.4-4.2 1.8-4.2 4.4 1.7 4.4 4.2 4.4Zm18.1 4.4c-4.7 0-7.7-2-8.2-5.3l4.8-1.1c.3 1.7 1.5 2.5 3.5 2.5 1.6 0 2.6-.5 2.6-1.4 0-.8-.7-1.2-2.2-1.5l-2.7-.6c-3.5-.8-5.3-2.4-5.3-5 0-3.2 2.9-5.2 7.3-5.2 4.1 0 7 1.8 7.6 4.8l-4.6 1.2c-.4-1.4-1.5-2.1-3-2.1-1.5 0-2.4.5-2.4 1.3 0 .7.6 1.1 2 1.4l2.7.6c3.7.8 5.5 2.4 5.5 5.1 0 3.3-3 5.3-7.6 5.3Zm19.5-.1c-4.2 0-6.6-2.2-6.6-6.2v-6.7h-3.3V8.5h3.3V4.2h5.2v4.3h5.1v4.1H119v5.9c0 1.8.9 2.6 2.6 2.6.8 0 1.5-.2 2.2-.5v4.1c-1 .5-2.2.8-3.5.8Z"
+      />
+    </svg>
+  )}
+</span>
+
+<style>
+  .logo {
+    align-items: center;
+    display: inline-flex;
+    gap: 0.62rem;
+    line-height: 0;
+  }
+
+  .logo-mark {
+    flex: 0 0 auto;
+    height: 36px;
+    width: 36px;
+  }
+
+  .logo-word {
+    height: 25px;
+    width: 100px;
+  }
+
+  .mark-bg,
+  .word-fill { fill: var(--ink); }
+  .mark-a { fill: var(--brand); }
+  .mark-result {
+    fill: none;
+    stroke: var(--brand);
+    stroke-linecap: round;
+    stroke-width: 1.6;
+  }
+
+  .logo--reverse .mark-bg { fill: var(--brand); }
+  .logo--reverse .mark-a { fill: var(--ink); }
+  .logo--reverse .mark-result { stroke: var(--ink); }
+  .logo--reverse .word-fill { fill: white; }
+
+  .logo--compact .logo-mark {
+    height: 32px;
+    width: 32px;
+  }
+</style>
