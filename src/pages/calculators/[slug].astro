@@ -4,6 +4,7 @@ import CalculatorWidget from "@/components/CalculatorWidget.astro";
 import ToolCard from "@/components/ToolCard.astro";
 import { calculators, calculatorsByCategory } from "@/data/calculators";
 import { categoryMap } from "@/data/categories";
+import ToolIcon from "@/components/ToolIcon.astro";
 
 export function getStaticPaths() {
   return calculators.map((calculator) => ({ params: { slug: calculator.slug }, props: { calculator } }));
@@ -52,7 +53,7 @@ const schema = [
         <a href="/">Home</a><span>/</span><a href={`/${category.id}/`}>{category.shortName}</a><span>/</span><span>{calculator.name}</span>
       </nav>
       <div class="hero-copy">
-        <p class="eyebrow">{category.icon} {category.name}</p>
+        <p class="eyebrow"><span class="hero-icon"><ToolIcon slug={calculator.slug} /></span>{category.name}</p>
         <h1>{calculator.name}</h1>
         <p>{calculator.description}</p>
       </div>
@@ -112,6 +113,8 @@ const schema = [
   .breadcrumbs { color: var(--muted); display: flex; flex-wrap: wrap; font-size: 0.8rem; gap: 0.55rem; margin-bottom: 5rem; }
   .breadcrumbs a { text-decoration: none; }
   .hero-copy { max-width: 850px; }
+  .hero-copy .eyebrow { align-items: center; display: flex; gap: 0.6rem; }
+  .hero-icon { align-items: center; background: color-mix(in srgb, var(--accent) 30%, white); border-radius: 8px; display: inline-flex; height: 30px; justify-content: center; width: 30px; }
   .hero-copy p:last-child { font-size: 1.1rem; max-width: 720px; }
   .calculator-wrap { margin-top: -4.5rem; position: relative; z-index: 2; }
   .content-section { padding: 6rem 0; }
