@@ -1,0 +1,49 @@
+---
+import { categories } from "@/data/categories";
+---
+
+<footer>
+  <div class="container footer-grid">
+    <div>
+      <a class="footer-brand" href="/">abelost<span>.</span></a>
+      <p>Practical calculators for everyday decisions. Clear methods, useful estimates, no account required.</p>
+    </div>
+    <div>
+      <strong>Tools</strong>
+      {categories.map((category) => <a href={`/${category.id}/`}>{category.name}</a>)}
+    </div>
+    <div>
+      <strong>Company</strong>
+      <a href="/about/">About</a>
+      <a href="/methodology/">Methodology</a>
+      <a href="/contact/">Contact</a>
+    </div>
+    <div>
+      <strong>Legal</strong>
+      <a href="/privacy/">Privacy</a>
+      <a href="/terms/">Terms</a>
+      <a href="/disclaimer/">Disclaimer</a>
+    </div>
+  </div>
+  <div class="container legal-line">
+    <span>© {new Date().getFullYear()} Abelost</span>
+    <span>Estimates for planning, not professional quotes.</span>
+  </div>
+</footer>
+
+<style>
+  footer { background: var(--ink); color: white; padding: 4.5rem 0 1.5rem; }
+  .footer-grid { display: grid; gap: 3rem; grid-template-columns: 2fr repeat(3, 1fr); }
+  .footer-brand { font-family: "Manrope", sans-serif; font-size: 2rem; font-weight: 800; text-decoration: none; }
+  .footer-brand span { color: var(--brand); }
+  .footer-grid p { color: #aebbb5; max-width: 430px; }
+  .footer-grid strong { display: block; font-size: 0.82rem; letter-spacing: 0.08em; margin-bottom: 1rem; text-transform: uppercase; }
+  .footer-grid > div:not(:first-child) a { color: #bac4bf; display: block; font-size: 0.92rem; margin: 0.7rem 0; text-decoration: none; }
+  .footer-grid a:hover { color: var(--brand); }
+  .legal-line { border-top: 1px solid #35413d; color: #8f9b96; display: flex; font-size: 0.8rem; justify-content: space-between; margin-top: 3rem; padding-top: 1.5rem; }
+
+  @media (max-width: 720px) {
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    .footer-grid > div:first-child { grid-column: 1 / -1; }
+  }
+</style>

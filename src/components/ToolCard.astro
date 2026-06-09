@@ -1,0 +1,36 @@
+---
+import { categoryMap } from "@/data/categories";
+import type { CalculatorDefinition } from "@/lib/types";
+
+interface Props {
+  tool: CalculatorDefinition;
+  compact?: boolean;
+}
+
+const { tool, compact = false } = Astro.props;
+const category = categoryMap[tool.category];
+---
+
+<a class:list={["tool-card", "card", { compact }]} href={`/calculators/${tool.slug}/`} style={`--accent:${category.accent}`}>
+  <div class="tool-top">
+    <span class="tool-icon">{category.icon}</span>
+    <span class="arrow">↗</span>
+  </div>
+  <div>
+    <p>{category.shortName}</p>
+    <h3>{tool.name}</h3>
+    {!compact && <span>{tool.summary}</span>}
+  </div>
+</a>
+
+<style>
+  .tool-card { display: flex; flex-direction: column; justify-content: space-between; min-height: 245px; padding: 1.35rem; text-decoration: none; transition: transform 160ms ease, box-shadow 160ms ease; }
+  .tool-card:hover { box-shadow: var(--shadow); transform: translateY(-4px); }
+  .tool-top { align-items: center; display: flex; justify-content: space-between; }
+  .tool-icon { align-items: center; background: color-mix(in srgb, var(--accent) 23%, white); border-radius: 13px; color: var(--ink); display: flex; font-size: 1.4rem; height: 48px; justify-content: center; width: 48px; }
+  .arrow { color: var(--muted); font-size: 1.15rem; }
+  p { color: var(--accent); font-size: 0.74rem; font-weight: 800; letter-spacing: 0.08em; margin: 0 0 0.55rem; text-transform: uppercase; }
+  h3 { margin-bottom: 0.55rem; }
+  div > span { color: var(--muted); font-size: 0.9rem; line-height: 1.55; }
+  .compact { min-height: 170px; }
+</style>

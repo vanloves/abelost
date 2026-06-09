@@ -1,0 +1,62 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import ToolCard from "@/components/ToolCard.astro";
+import { categories } from "@/data/categories";
+import { calculatorsByCategory } from "@/data/calculators";
+
+export function getStaticPaths() {
+  return categories.map((category) => ({ params: { category: category.id }, props: { category } }));
+}
+
+const { category } = Astro.props;
+const tools = calculatorsByCategory(category.id);
+---
+
+<BaseLayout title={`${category.name} Calculators`} description={`${category.description} Browse ${tools.length} free tools with clear formulas and editable assumptions.`}>
+  <header class="category-hero" style={`--accent:${category.accent}`}>
+    <div class="container hero-grid">
+      <div>
+        <p class="eyebrow">{category.icon} {category.shortName} toolkit</p>
+        <h1>{category.name}<br />calculators.</h1>
+        <p>{category.description} Every tool runs privately in your browser.</p>
+      </div>
+      <div class="count-card">
+        <strong>{String(tools.length).padStart(2, "0")}</strong>
+        <span>focused tools</span>
+      </div>
+    </div>
+  </header>
+  <section class="section">
+    <div class="container">
+      <div class="grid grid--3">
+        {tools.map((tool) => <ToolCard tool={tool} />)}
+      </div>
+    </div>
+  </section>
+  <section class="category-note">
+    <div class="container note-grid">
+      <h2>Plan with context,<br />not false precision.</h2>
+      <div>
+        <p>Every result depends on the measurements, prices, and assumptions you provide. Abelost explains the formula and common limitations so you can use the number as a starting point.</p>
+        <a href="/methodology/">Read our methodology →</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .category-hero { background: color-mix(in srgb, var(--accent) 20%, var(--paper)); padding: 6rem 0; }
+  .hero-grid { align-items: end; display: grid; gap: 4rem; grid-template-columns: 1fr auto; }
+  .category-hero p:last-child { font-size: 1.1rem; max-width: 620px; }
+  .count-card { align-items: center; background: var(--ink); border-radius: var(--radius); color: white; display: flex; flex-direction: column; height: 190px; justify-content: center; width: 190px; }
+  .count-card strong { color: var(--accent); font-family: "Manrope"; font-size: 4.2rem; letter-spacing: -0.08em; line-height: 1; }
+  .count-card span { color: #aebbb5; font-size: 0.8rem; margin-top: 0.5rem; text-transform: uppercase; }
+  .category-note { background: var(--ink); color: white; padding: 5rem 0; }
+  .note-grid { align-items: center; display: grid; gap: 5rem; grid-template-columns: 1fr 1fr; }
+  .note-grid p { color: #b3c0ba; }
+  .note-grid a { color: var(--brand); font-weight: 700; }
+  @media (max-width: 680px) {
+    .hero-grid, .note-grid { grid-template-columns: 1fr; }
+    .count-card { height: 130px; width: 130px; }
+  }
+</style>

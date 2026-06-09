@@ -1,0 +1,60 @@
+---
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import "@/styles/global.css";
+
+interface Props {
+  title: string;
+  description: string;
+  canonical?: string;
+  image?: string;
+  schema?: Record<string, unknown> | Array<Record<string, unknown>>;
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description,
+  canonical = Astro.url.pathname,
+  image = "/social-card.svg",
+  schema,
+  noindex = false
+} = Astro.props;
+const siteName = "Abelost";
+const fullTitle = title.includes("Abelost") ? title : `${title} | ${siteName}`;
+const canonicalUrl = new URL(canonical, Astro.site);
+const imageUrl = new URL(image, Astro.site);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    {noindex && <meta name="robots" content="noindex,follow" />}
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={siteName} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={imageUrl} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="theme-color" content="#17231f" />
+    {schema && <script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />}
+    <!-- Add Google Search Console, Analytics, consent, and AdSense tags only after account setup. -->
+  </head>
+  <body>
+    <Header />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

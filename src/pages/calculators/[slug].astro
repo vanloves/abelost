@@ -1,0 +1,140 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import CalculatorWidget from "@/components/CalculatorWidget.astro";
+import ToolCard from "@/components/ToolCard.astro";
+import { calculators, calculatorsByCategory } from "@/data/calculators";
+import { categoryMap } from "@/data/categories";
+
+export function getStaticPaths() {
+  return calculators.map((calculator) => ({ params: { slug: calculator.slug }, props: { calculator } }));
+}
+
+const { calculator } = Astro.props;
+const category = categoryMap[calculator.category];
+const related = calculatorsByCategory(calculator.category).filter((tool) => tool.slug !== calculator.slug).slice(0, 3);
+const pageUrl = `https://abelost.com/calculators/${calculator.slug}/`;
+const schema = [
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name: calculator.name,
+    url: pageUrl,
+    applicationCategory: "CalculatorApplication",
+    operatingSystem: "Any",
+    offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+    description: calculator.summary
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: calculator.faq.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: { "@type": "Answer", text: item.answer }
+    }))
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://abelost.com/" },
+      { "@type": "ListItem", position: 2, name: "Calculators", item: "https://abelost.com/calculators/" },
+      { "@type": "ListItem", position: 3, name: calculator.name, item: pageUrl }
+    ]
+  }
+];
+---
+
+<BaseLayout title={calculator.name} description={calculator.summary} schema={schema}>
+  <header class="tool-hero" style={`--accent:${category.accent}`}>
+    <div class="container">
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <a href="/">Home</a><span>/</span><a href={`/${category.id}/`}>{category.shortName}</a><span>/</span><span>{calculator.name}</span>
+      </nav>
+      <div class="hero-copy">
+        <p class="eyebrow">{category.icon} {category.name}</p>
+        <h1>{calculator.name}</h1>
+        <p>{calculator.description}</p>
+      </div>
+    </div>
+  </header>
+
+  <div class="container calculator-wrap">
+    <CalculatorWidget calculator={calculator} />
+  </div>
+
+  <section class="content-section">
+    <div class="container content-grid">
+      <article class="prose">
+        <p class="eyebrow">How it works</p>
+        <h2>How to calculate it</h2>
+        <p>The calculator applies the values you enter to this formula:</p>
+        <div class="formula">{calculator.formula}</div>
+        <h3>Worked example</h3>
+        <p>{calculator.example}</p>
+        <h3>Important assumptions</h3>
+        <ul>{calculator.assumptions.map((assumption) => <li>{assumption}</li>)}</ul>
+        <p class="reviewed">Method reviewed June 9, 2026. Prices and rates are user-provided defaults and should be replaced with local values.</p>
+      </article>
+      <aside class="side-note">
+        <span>Good to know</span>
+        <h3>Measure first, then add a realistic buffer.</h3>
+        <p>Small measurement errors can compound. Split irregular spaces into simple rectangles, calculate each one, and combine the results.</p>
+        <a href="/methodology/">Calculation methodology →</a>
+      </aside>
+    </div>
+  </section>
+
+  <section class="faq section">
+    <div class="container faq-grid">
+      <div><p class="eyebrow">Common questions</p><h2>Frequently asked.</h2></div>
+      <div>
+        {calculator.faq.map((item) => (
+          <details>
+            <summary>{item.question}<span>+</span></summary>
+            <p>{item.answer}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section related">
+    <div class="container">
+      <div class="section-heading"><div><p class="eyebrow">Keep planning</p><h2>Related tools</h2></div><a href={`/${category.id}/`}>View all {category.shortName} tools →</a></div>
+      <div class="grid grid--3">{related.map((tool) => <ToolCard tool={tool} compact />)}</div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .tool-hero { background: color-mix(in srgb, var(--accent) 16%, var(--paper)); padding: 3rem 0 8rem; }
+  .breadcrumbs { color: var(--muted); display: flex; flex-wrap: wrap; font-size: 0.8rem; gap: 0.55rem; margin-bottom: 5rem; }
+  .breadcrumbs a { text-decoration: none; }
+  .hero-copy { max-width: 850px; }
+  .hero-copy p:last-child { font-size: 1.1rem; max-width: 720px; }
+  .calculator-wrap { margin-top: -4.5rem; position: relative; z-index: 2; }
+  .content-section { padding: 6rem 0; }
+  .content-grid { align-items: start; display: grid; gap: 6rem; grid-template-columns: 1fr 320px; }
+  .formula { background: var(--surface-2); border-left: 4px solid var(--accent); border-radius: 0 12px 12px 0; font-family: "Manrope"; font-weight: 700; line-height: 1.6; padding: 1.2rem; }
+  .reviewed { border-top: 1px solid var(--line); font-size: 0.78rem; margin-top: 2rem; padding-top: 1rem; }
+  .side-note { background: var(--ink); border-radius: var(--radius); color: white; padding: 1.6rem; position: sticky; top: 100px; }
+  .side-note > span { color: var(--brand); font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+  .side-note h3 { margin-top: 1.5rem; }
+  .side-note p { color: #adbbb5; font-size: 0.9rem; }
+  .side-note a { color: var(--brand); font-size: 0.85rem; font-weight: 700; }
+  .faq { background: var(--surface-2); }
+  .faq-grid { display: grid; gap: 5rem; grid-template-columns: 0.75fr 1.25fr; }
+  details { border-top: 1px solid var(--line); padding: 1.25rem 0; }
+  details:last-child { border-bottom: 1px solid var(--line); }
+  summary { cursor: pointer; display: flex; font-weight: 700; justify-content: space-between; list-style: none; }
+  summary::-webkit-details-marker { display: none; }
+  summary span { font-size: 1.25rem; }
+  details p { margin-bottom: 0; }
+  .related .section-heading a { color: var(--muted); font-weight: 700; }
+  @media (max-width: 760px) {
+    .content-grid, .faq-grid { grid-template-columns: 1fr; }
+    .side-note { position: static; }
+    .breadcrumbs { margin-bottom: 3rem; }
+  }
+</style>

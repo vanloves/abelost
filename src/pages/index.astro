@@ -1,0 +1,158 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import ToolCard from "@/components/ToolCard.astro";
+import { categories } from "@/data/categories";
+import { calculators } from "@/data/calculators";
+
+const featured = ["paint", "electricity-cost", "fuel-cost", "profit-margin", "mulch", "ev-charging"]
+  .map((slug) => calculators.find((tool) => tool.slug === slug))
+  .filter((tool) => tool !== undefined);
+---
+
+<BaseLayout
+  title="Abelost — Practical Calculators for Everyday Decisions"
+  description="Free calculators for home projects, yard materials, energy use, vehicle costs, and small business decisions."
+  schema={{
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "Abelost",
+    url: "https://abelost.com",
+    description: "Practical calculators for everyday decisions."
+  }}
+>
+  <section class="hero">
+    <div class="container hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow">25 free planning tools</p>
+        <h1>Do the math.<br /><em>Make the call.</em></h1>
+        <p class="lede">Clear, practical calculators for projects, energy, driving, and business. No signup. No mystery math.</p>
+        <div class="actions">
+          <a class="button" href="/calculators/">Explore all calculators <span>↗</span></a>
+          <a class="text-link" href="/methodology/">See how estimates work</a>
+        </div>
+        <div class="trust-row">
+          <span>✓ Local calculations</span>
+          <span>✓ Transparent formulas</span>
+          <span>✓ Mobile friendly</span>
+        </div>
+      </div>
+      <div class="hero-dashboard card" aria-label="Example calculator results">
+        <div class="dash-head">
+          <div><span></span><span></span><span></span></div>
+          <small>Project estimate</small>
+        </div>
+        <div class="dash-body">
+          <p>Paint required</p>
+          <strong>3.52 <small>gal</small></strong>
+          <div class="meter"><span></span></div>
+          <div class="dash-stats">
+            <div><small>Area</small><b>1,078 sq ft</b></div>
+            <div><small>Est. cost</small><b>$147.84</b></div>
+          </div>
+        </div>
+        <div class="float-card float-one"><span>ϟ</span><b>Energy</b><small>$61.20/mo</small></div>
+        <div class="float-card float-two"><span>%</span><b>Margin</b><small>35.0%</small></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="category-strip">
+    <div class="container category-grid">
+      {categories.map((category, index) => (
+        <a href={`/${category.id}/`} style={`--accent:${category.accent}`}>
+          <span>{String(index + 1).padStart(2, "0")}</span>
+          <div><strong>{category.shortName}</strong><small>{calculators.filter((tool) => tool.category === category.id).length} tools</small></div>
+          <b>↗</b>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-heading">
+        <div><p class="eyebrow">Popular calculators</p><h2>Start with a useful answer.</h2></div>
+        <p>Every calculator shows the method behind the result and gives you controls for the assumptions that matter.</p>
+      </div>
+      <div class="grid grid--3">
+        {featured.map((tool) => <ToolCard tool={tool} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="principles section">
+    <div class="container principles-grid">
+      <div>
+        <p class="eyebrow">Built to be understood</p>
+        <h2>Useful numbers, with the working shown.</h2>
+        <p>Estimates are only helpful when you know what went into them. Abelost keeps the formula, assumptions, and limits beside every result.</p>
+        <a class="button button--light" href="/methodology/">Our methodology</a>
+      </div>
+      <div class="principle-list">
+        <article><span>01</span><div><h3>Private by default</h3><p>Inputs stay in your browser. No account or personal profile is required.</p></div></article>
+        <article><span>02</span><div><h3>Editable assumptions</h3><p>Change local rates, material prices, waste factors, and usage patterns.</p></div></article>
+        <article><span>03</span><div><h3>Planning, not pretending</h3><p>Results are practical estimates with clear limitations, not false precision.</p></div></article>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero { overflow: hidden; padding: 7rem 0 6rem; }
+  .hero-grid { align-items: center; display: grid; gap: 5rem; grid-template-columns: 1.08fr 0.92fr; }
+  h1 em { color: #547461; font-style: normal; }
+  .lede { font-size: 1.16rem; max-width: 620px; }
+  .actions { align-items: center; display: flex; flex-wrap: wrap; gap: 1.25rem; margin-top: 2rem; }
+  .text-link { font-weight: 700; }
+  .trust-row { color: var(--muted); display: flex; flex-wrap: wrap; font-size: 0.79rem; gap: 1rem; margin-top: 2rem; }
+  .hero-dashboard { background: var(--ink); color: white; min-height: 420px; padding: 1rem; position: relative; transform: rotate(1deg); }
+  .dash-head { align-items: center; border-bottom: 1px solid #3d4944; display: flex; justify-content: space-between; padding: 0.35rem 0.35rem 1rem; }
+  .dash-head div { display: flex; gap: 0.35rem; }
+  .dash-head span { background: #66726d; border-radius: 50%; height: 7px; width: 7px; }
+  .dash-head small { color: #8e9b95; }
+  .dash-body { padding: 3.2rem 2.2rem; }
+  .dash-body p { color: #aab5b0; margin: 0; }
+  .dash-body > strong { display: block; font-family: "Manrope"; font-size: 4.8rem; letter-spacing: -0.07em; margin: 0.25rem 0 1.5rem; }
+  .dash-body > strong small { color: var(--brand); font-size: 1rem; letter-spacing: 0; }
+  .meter { background: #35413d; border-radius: 999px; height: 9px; overflow: hidden; }
+  .meter span { background: var(--brand); display: block; height: 100%; width: 68%; }
+  .dash-stats { display: grid; gap: 1rem; grid-template-columns: 1fr 1fr; margin-top: 2rem; }
+  .dash-stats div { background: #25332e; border-radius: 12px; padding: 1rem; }
+  .dash-stats small { color: #8e9b95; display: block; margin-bottom: 0.3rem; }
+  .float-card { background: white; border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); color: var(--ink); display: grid; grid-template-columns: auto 1fr; padding: 0.85rem; position: absolute; transform: rotate(-1deg); width: 160px; }
+  .float-card span { align-items: center; background: var(--brand); border-radius: 8px; display: flex; grid-row: 1 / 3; height: 36px; justify-content: center; margin-right: 0.65rem; width: 36px; }
+  .float-card b { font-size: 0.85rem; }
+  .float-card small { color: var(--muted); font-size: 0.72rem; }
+  .float-one { right: -45px; top: 55px; }
+  .float-two { bottom: 32px; left: -55px; }
+  .category-strip { border-bottom: 1px solid var(--line); border-top: 1px solid var(--line); }
+  .category-grid { display: grid; grid-template-columns: repeat(5, 1fr); padding-inline: 0; }
+  .category-grid a { align-items: center; border-right: 1px solid var(--line); display: grid; gap: 0.75rem; grid-template-columns: auto 1fr auto; padding: 1.35rem; text-decoration: none; }
+  .category-grid a:first-child { border-left: 1px solid var(--line); }
+  .category-grid a:hover { background: var(--surface); }
+  .category-grid a > span { color: var(--accent); font-size: 0.72rem; font-weight: 800; }
+  .category-grid strong, .category-grid small { display: block; }
+  .category-grid small { color: var(--muted); font-size: 0.72rem; margin-top: 0.15rem; }
+  .category-grid b { color: var(--muted); }
+  .principles { background: var(--brand-dark); color: white; }
+  .principles .eyebrow { color: var(--brand); }
+  .principles p { color: #b4c1bb; }
+  .principles-grid { display: grid; gap: 6rem; grid-template-columns: 0.9fr 1.1fr; }
+  .principle-list article { border-top: 1px solid #496058; display: grid; gap: 1.25rem; grid-template-columns: 35px 1fr; padding: 1.5rem 0; }
+  .principle-list article > span { color: var(--brand); font-size: 0.75rem; font-weight: 800; }
+  .principle-list h3, .principle-list p { margin: 0; }
+  .principle-list p { margin-top: 0.35rem; }
+
+  @media (max-width: 900px) {
+    .hero-grid, .principles-grid { grid-template-columns: 1fr; }
+    .hero-dashboard { margin-inline: auto; max-width: 580px; width: 90%; }
+    .category-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 620px) {
+    .hero { padding-top: 4.5rem; }
+    .float-one { right: -25px; }
+    .float-two { left: -25px; }
+    .category-grid { grid-template-columns: 1fr; }
+    .category-grid a { border-bottom: 1px solid var(--line); }
+  }
+</style>

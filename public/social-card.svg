@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#17231f"/>
+  <circle cx="1020" cy="100" r="260" fill="#d5ff73" opacity=".13"/>
+  <circle cx="180" cy="620" r="300" fill="#65a7ff" opacity=".1"/>
+  <rect x="90" y="90" width="70" height="70" rx="18" fill="#d5ff73"/>
+  <text x="113" y="143" font-family="Arial,sans-serif" font-size="46" font-weight="700" fill="#17231f">A</text>
+  <text x="90" y="275" font-family="Arial,sans-serif" font-size="92" font-weight="700" fill="white">Practical calculators.</text>
+  <text x="90" y="385" font-family="Arial,sans-serif" font-size="92" font-weight="700" fill="#d5ff73">Clear answers.</text>
+  <text x="90" y="500" font-family="Arial,sans-serif" font-size="32" fill="#aebbb5">abelost.com</text>
+</svg>

@@ -1,0 +1,20 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Page Not Found" description="The requested Abelost page could not be found." noindex>
+  <section class="not-found">
+    <div class="container">
+      <p class="code">404</p>
+      <h1>That number<br />doesn’t add up.</h1>
+      <p>The page may have moved, or the address may be incorrect.</p>
+      <a class="button" href="/calculators/">Browse calculators</a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .not-found { background: var(--surface-2); min-height: 70vh; padding: 7rem 0; text-align: center; }
+  .code { color: #547461; font-family: "Manrope"; font-size: 1rem; font-weight: 800; letter-spacing: 0.15em; }
+  .not-found p:not(.code) { margin: 1.5rem auto; max-width: 500px; }
+</style>

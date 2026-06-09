@@ -1,0 +1,36 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import ToolCard from "@/components/ToolCard.astro";
+import { categories } from "@/data/categories";
+import { calculatorsByCategory } from "@/data/calculators";
+---
+
+<BaseLayout title="All Calculators" description="Browse all 25 free Abelost calculators for home, yard, energy, auto, and small business decisions.">
+  <header class="page-hero">
+    <div class="container">
+      <p class="eyebrow">The complete toolkit</p>
+      <h1>All calculators.</h1>
+      <p>Twenty-five focused tools. Pick a category or browse the full collection.</p>
+    </div>
+  </header>
+  {categories.map((category) => (
+    <section class="section category-section" id={category.id}>
+      <div class="container">
+        <div class="section-heading">
+          <div><p class="eyebrow" style={`color:${category.accent}`}>{category.shortName}</p><h2>{category.name}</h2></div>
+          <p>{category.description}</p>
+        </div>
+        <div class="grid grid--3">
+          {calculatorsByCategory(category.id).map((tool) => <ToolCard tool={tool} compact />)}
+        </div>
+      </div>
+    </section>
+  ))}
+</BaseLayout>
+
+<style>
+  .page-hero { background: var(--ink); color: white; padding: 6rem 0; }
+  .page-hero .eyebrow { color: var(--brand); }
+  .page-hero p:last-child { color: #b3c0ba; font-size: 1.1rem; }
+  .category-section:nth-of-type(odd) { background: var(--surface-2); }
+</style>

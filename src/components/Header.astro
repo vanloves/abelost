@@ -1,0 +1,47 @@
+---
+import { categories } from "@/data/categories";
+---
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="Abelost home">
+      <span class="brand-mark">A</span>
+      <span>abelost</span>
+    </a>
+    <nav aria-label="Main navigation">
+      <a href="/calculators/">All tools</a>
+      {categories.slice(0, 4).map((category) => (
+        <a href={`/${category.id}/`}>{category.shortName}</a>
+      ))}
+    </nav>
+    <a class="browse" href="/calculators/">Browse 25 tools <span aria-hidden="true">↗</span></a>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    background: rgba(247, 248, 243, 0.9);
+    border-bottom: 1px solid rgba(220, 226, 216, 0.85);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    backdrop-filter: blur(14px);
+  }
+
+  .header-inner { align-items: center; display: flex; height: 76px; justify-content: space-between; }
+  .brand { align-items: center; display: flex; font-family: "Manrope", sans-serif; font-size: 1.22rem; font-weight: 800; gap: 0.55rem; text-decoration: none; }
+  .brand-mark { align-items: center; background: var(--ink); border-radius: 9px; color: var(--brand); display: inline-flex; height: 32px; justify-content: center; width: 32px; }
+  nav { display: flex; gap: 1.6rem; }
+  nav a { color: var(--muted); font-size: 0.93rem; font-weight: 600; text-decoration: none; }
+  nav a:hover { color: var(--ink); }
+  .browse { font-size: 0.88rem; font-weight: 700; text-decoration: none; }
+
+  @media (max-width: 850px) {
+    nav { display: none; }
+  }
+
+  @media (max-width: 460px) {
+    .browse { font-size: 0; }
+    .browse span { font-size: 1rem; }
+  }
+</style>

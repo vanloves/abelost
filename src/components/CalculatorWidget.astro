@@ -1,0 +1,141 @@
+---
+import type { CalculatorDefinition } from "@/lib/types";
+
+interface Props { calculator: CalculatorDefinition; }
+const { calculator } = Astro.props;
+---
+
+<section class="calculator card" data-calculator data-slug={calculator.slug}>
+  <div class="input-panel">
+    <div class="panel-heading">
+      <span>01</span>
+      <div>
+        <p class="eyebrow">Your inputs</p>
+        <h2>Enter your numbers</h2>
+      </div>
+    </div>
+    <form>
+      <div class="input-grid">
+        {calculator.inputs.map((input) => (
+          <label>
+            <span class="label-line">
+              <strong>{input.label}</strong>
+              {input.unit && <small>{input.unit}</small>}
+            </span>
+            {input.type === "select" ? (
+              <select name={input.key}>
+                {input.options?.map((option) => <option value={option.value}>{option.label}</option>)}
+              </select>
+            ) : (
+              <input
+                type="number"
+                name={input.key}
+                value={input.defaultValue}
+                min={input.min}
+                max={input.max}
+                step={input.step}
+                inputmode="decimal"
+                required
+              />
+            )}
+            {input.help && <small class="help">{input.help}</small>}
+          </label>
+        ))}
+      </div>
+      <button class="button" type="submit">Update estimate</button>
+      <button class="reset" type="reset">Reset defaults</button>
+    </form>
+  </div>
+  <aside class="result-panel" aria-live="polite">
+    <div class="panel-heading">
+      <span>02</span>
+      <div>
+        <p class="eyebrow">Your estimate</p>
+        <h2>Planning result</h2>
+      </div>
+    </div>
+    <div class="results" data-results></div>
+    <p class="privacy-note">Calculated locally. Your inputs never leave this page.</p>
+  </aside>
+</section>
+
+<script>
+  import { calculate } from "@/lib/calculations";
+
+  const currency = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 2 });
+  const number = new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 });
+
+  function formatValue(value: number, format?: string, unit?: string) {
+    if (!Number.isFinite(value)) return "Check inputs";
+    if (format === "currency") return `${currency.format(value)}${unit || ""}`;
+    if (format === "percent") return `${number.format(value)}${unit || "%"}`;
+    return `${number.format(value)}${unit ? ` ${unit}` : ""}`;
+  }
+
+  document.querySelectorAll<HTMLElement>("[data-calculator]").forEach((widget) => {
+    const form = widget.querySelector<HTMLFormElement>("form");
+    const output = widget.querySelector<HTMLElement>("[data-results]");
+    const slug = widget.dataset.slug;
+    if (!form || !output || !slug) return;
+
+    const update = () => {
+      const values = Object.fromEntries(
+        [...new FormData(form).entries()].map(([key, value]) => [key, Number(value)])
+      );
+      try {
+        const results = calculate(slug, values);
+        output.innerHTML = results.map((item) => `
+          <div class="result ${item.primary ? "result--primary" : ""}">
+            <span>${item.label}</span>
+            <strong>${formatValue(item.value, item.format, item.unit)}</strong>
+          </div>
+        `).join("");
+      } catch {
+        output.innerHTML = `<p class="error">Please check the values and try again.</p>`;
+      }
+    };
+
+    form.addEventListener("submit", (event) => { event.preventDefault(); update(); });
+    form.addEventListener("input", update);
+    form.addEventListener("reset", () => window.setTimeout(update));
+    update();
+  });
+</script>
+
+<style>
+  .calculator { display: grid; grid-template-columns: 1.1fr 0.9fr; overflow: hidden; }
+  .input-panel, .result-panel { padding: clamp(1.4rem, 4vw, 2.6rem); }
+  .result-panel { background: var(--ink); color: white; }
+  .panel-heading { align-items: flex-start; display: flex; gap: 1rem; margin-bottom: 2rem; }
+  .panel-heading > span { align-items: center; border: 1px solid var(--line); border-radius: 50%; color: var(--muted); display: flex; font-size: 0.7rem; height: 32px; justify-content: center; width: 32px; }
+  .panel-heading h2 { font-size: 1.6rem; }
+  .panel-heading .eyebrow { margin: 0 0 0.25rem; }
+  .result-panel .panel-heading > span { border-color: #43504b; color: #aab5b0; }
+  .result-panel .eyebrow { color: var(--brand); }
+  .input-grid { display: grid; gap: 1rem; grid-template-columns: 1fr 1fr; margin-bottom: 1.5rem; }
+  label { display: block; }
+  .label-line { align-items: center; display: flex; justify-content: space-between; margin-bottom: 0.4rem; }
+  .label-line strong { font-size: 0.86rem; }
+  .label-line small { color: var(--muted); font-size: 0.75rem; }
+  input, select { background: var(--paper); border: 1px solid var(--line); border-radius: 10px; color: var(--ink); outline: none; padding: 0.8rem; width: 100%; }
+  input:focus, select:focus { border-color: var(--ink); box-shadow: 0 0 0 3px rgba(23, 35, 31, 0.08); }
+  form .button { border: 0; cursor: pointer; }
+  .reset { background: transparent; border: 0; color: var(--muted); cursor: pointer; font-size: 0.85rem; margin-left: 1rem; text-decoration: underline; }
+  .results { display: grid; gap: 0.8rem; }
+  .result { align-items: center; border: 1px solid #3b4843; border-radius: 14px; display: flex; justify-content: space-between; padding: 1rem; }
+  .result span { color: #aebbb5; font-size: 0.85rem; }
+  .result strong { font-size: 1.05rem; }
+  .result--primary { align-items: start; background: var(--brand); border-color: var(--brand); color: var(--ink); flex-direction: column; gap: 0.4rem; padding: 1.4rem; }
+  .result--primary span { color: #44512a; }
+  .result--primary strong { font-family: "Manrope", sans-serif; font-size: clamp(2rem, 5vw, 3.2rem); letter-spacing: -0.05em; }
+  .privacy-note { color: #92a099; font-size: 0.75rem; margin: 1.5rem 0 0; }
+  :global(.error) { color: #ffaaa0; }
+
+  @media (max-width: 780px) {
+    .calculator { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 480px) {
+    .input-grid { grid-template-columns: 1fr; }
+  }
+</style>

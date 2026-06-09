@@ -1,0 +1,25 @@
+---
+import ContentLayout from "@/layouts/ContentLayout.astro";
+---
+
+<ContentLayout title="Calculation Methodology" description="How Abelost designs, tests, explains, and maintains its planning calculators." eyebrow="Transparency">
+  <h2>What an Abelost result means</h2>
+  <p>Our results are planning estimates. They are intended to help you understand scale, compare scenarios, and prepare questions for a supplier or professional. They are not contractor quotes, utility bills, financial statements, engineering calculations, or professional advice.</p>
+  <h2>Calculation design</h2>
+  <ol>
+    <li>Define the decision the calculator should support.</li>
+    <li>Use a short, inspectable formula with standard units.</li>
+    <li>Expose inputs that materially change the answer.</li>
+    <li>Choose conservative, clearly labeled defaults for examples.</li>
+    <li>Test normal cases, boundaries, and unit conversions.</li>
+    <li>Document assumptions and circumstances that can make the result differ.</li>
+  </ol>
+  <h2>Prices and rates</h2>
+  <p>Material prices, electricity rates, fuel prices, and business costs vary by location and time. These are user-editable inputs. Default values demonstrate the calculator; they should not be treated as current local market data.</p>
+  <h2>Rounding</h2>
+  <p>Displayed results are normally rounded to two decimal places. Materials sold as whole units should be rounded up to the next purchasable package. The calculator may display an unrounded planning quantity alongside a whole-unit recommendation.</p>
+  <h2>Testing and review</h2>
+  <p>Shared calculation functions are covered by automated tests. Material changes to formulas should include updated tests and a review of the explanation, example, assumptions, and metadata on the associated page.</p>
+  <h2>Privacy by design</h2>
+  <p>Calculator arithmetic runs locally in the browser. Abelost does not need to receive or store the values entered into a calculator.</p>
+</ContentLayout>
