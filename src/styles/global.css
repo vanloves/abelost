@@ -23,6 +23,14 @@ html {
 }
 
 body { margin: 0; min-width: 320px; }
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+summary:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--brand) 72%, var(--ink));
+  outline-offset: 3px;
+}
 
 a { color: inherit; }
 

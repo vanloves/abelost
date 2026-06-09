@@ -2,6 +2,74 @@ import type { CalculatorResult } from "./types";
 
 type Values = Record<string, number>;
 
+export class CalculationError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "CalculationError";
+  }
+}
+
+const requirePositive = (values: Values, fields: Array<[string, string]>) => {
+  for (const [key, label] of fields) {
+    if (!(values[key] > 0)) throw new CalculationError(`${label} must be greater than zero.`);
+  }
+};
+
+const validate = (slug: string, values: Values) => {
+  for (const value of Object.values(values)) {
+    if (!Number.isFinite(value)) throw new CalculationError("Enter a valid number in every field.");
+    if (value < 0) throw new CalculationError("Values cannot be negative.");
+  }
+
+  const positiveBySlug: Record<string, Array<[string, string]>> = {
+    paint: [["length", "Length"], ["width", "Width"], ["height", "Wall height"], ["coats", "Number of coats"], ["coverage", "Coverage"]],
+    flooring: [["length", "Length"], ["width", "Width"]],
+    tile: [["length", "Length"], ["width", "Width"], ["tileLength", "Tile length"], ["tileWidth", "Tile width"]],
+    concrete: [["length", "Length"], ["width", "Width"], ["depth", "Depth"]],
+    drywall: [["length", "Length"], ["width", "Width"], ["height", "Wall height"]],
+    mulch: [["length", "Length"], ["width", "Width"], ["depth", "Depth"]],
+    soil: [["length", "Length"], ["width", "Width"], ["depth", "Depth"]],
+    gravel: [["length", "Length"], ["width", "Width"], ["depth", "Depth"]],
+    sod: [["length", "Length"], ["width", "Width"], ["palletCoverage", "Pallet coverage"]],
+    "lawn-seed": [["length", "Length"], ["width", "Width"], ["rate", "Application rate"]],
+    "electricity-cost": [["watts", "Device power"], ["hours", "Hours"], ["days", "Days"]],
+    "appliance-energy": [["watts", "Appliance wattage"], ["hours", "Hours"], ["days", "Days"]],
+    "ac-running-cost": [["watts", "AC power draw"], ["hours", "Runtime"], ["days", "Cooling days"]],
+    "space-heater-cost": [["watts", "Heater wattage"], ["hours", "Hours"], ["days", "Days"]],
+    "ev-charging": [["miles", "Miles"], ["efficiency", "Vehicle efficiency"], ["chargingEfficiency", "Charging efficiency"]],
+    "fuel-cost": [["miles", "Distance"], ["mpg", "Fuel economy"]],
+    "trip-cost": [["miles", "Distance"], ["mpg", "Fuel economy"]],
+    mpg: [["miles", "Miles"], ["gallons", "Gallons"]],
+    "cost-per-mile": [["miles", "Annual miles"]],
+    "ev-vs-gas": [["miles", "Annual miles"], ["evEfficiency", "EV efficiency"], ["mpg", "Gas vehicle economy"]],
+    "profit-margin": [["revenue", "Revenue"]],
+    markup: [["cost", "Unit cost"], ["price", "Selling price"]],
+    "break-even": [["price", "Selling price"]],
+    roas: [["spend", "Ad spend"]],
+    "freelance-rate": [["hours", "Working hours"], ["weeks", "Working weeks"], ["utilization", "Billable utilization"]]
+  };
+
+  requirePositive(values, positiveBySlug[slug] ?? []);
+
+  if (slug === "paint") {
+    const wallArea = 2 * (values.length + values.width) * values.height;
+    if (values.openings >= wallArea) throw new CalculationError("Doors and windows must be smaller than the total wall area.");
+  }
+  if (slug === "drywall") {
+    const surfaceArea = 2 * (values.length + values.width) * values.height + values.length * values.width;
+    if (values.openings >= surfaceArea) throw new CalculationError("Doors and windows must be smaller than the total surface area.");
+  }
+  if (slug === "ev-charging" && values.chargingEfficiency > 100) {
+    throw new CalculationError("Charging efficiency cannot exceed 100%.");
+  }
+  if (slug === "break-even" && values.price <= values.variableCost) {
+    throw new CalculationError("Selling price must be greater than variable cost.");
+  }
+  if (slug === "freelance-rate" && values.tax >= 100) {
+    throw new CalculationError("Tax reserve must be less than 100%.");
+  }
+};
+
 const round = (value: number, digits = 2) => {
   const factor = 10 ** digits;
   return Math.round((value + Number.EPSILON) * factor) / factor;
@@ -16,6 +84,7 @@ const result = (
 ): CalculatorResult => ({ label, value: round(value), unit, format, primary });
 
 export function calculate(slug: string, v: Values): CalculatorResult[] {
+  validate(slug, v);
   switch (slug) {
     case "paint": {
       const area = 2 * (v.length + v.width) * v.height - v.openings;

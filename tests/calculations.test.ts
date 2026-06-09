@@ -82,6 +82,15 @@ describe("calculator catalog", () => {
     expect(results.length).toBeGreaterThan(0);
     for (const item of results) expect(Number.isFinite(item.value)).toBe(true);
   });
+
+  it("rejects invalid denominators and impossible relationships", () => {
+    expect(() => calculate("fuel-cost", { miles: 100, mpg: 0, price: 3.5 })).toThrow("Fuel economy must be greater than zero.");
+    expect(() => calculate("break-even", { fixedCosts: 1000, price: 20, variableCost: 20 })).toThrow("Selling price must be greater than variable cost.");
+    expect(() => calculate("paint", {
+      length: 10, width: 10, height: 8, openings: 400,
+      coats: 2, coverage: 350, waste: 10, price: 40
+    })).toThrow("Doors and windows must be smaller than the total wall area.");
+  });
 });
 
 describe("guide catalog", () => {

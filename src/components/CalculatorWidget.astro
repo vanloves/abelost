@@ -15,6 +15,7 @@ const { calculator } = Astro.props;
       </div>
     </div>
     <form>
+      <p class="form-error" data-form-error role="alert" hidden></p>
       <div class="input-grid">
         {calculator.inputs.map((input) => (
           <label>
@@ -75,10 +76,23 @@ const { calculator } = Astro.props;
   document.querySelectorAll<HTMLElement>("[data-calculator]").forEach((widget) => {
     const form = widget.querySelector<HTMLFormElement>("form");
     const output = widget.querySelector<HTMLElement>("[data-results]");
+    const errorBox = widget.querySelector<HTMLElement>("[data-form-error]");
     const slug = widget.dataset.slug;
-    if (!form || !output || !slug) return;
+    if (!form || !output || !errorBox || !slug) return;
 
     const update = () => {
+      errorBox.hidden = true;
+      errorBox.textContent = "";
+      widget.querySelectorAll("input").forEach((input) => input.removeAttribute("aria-invalid"));
+
+      if (!form.checkValidity()) {
+        output.innerHTML = "";
+        errorBox.textContent = "Check the highlighted fields and enter values within the allowed range.";
+        errorBox.hidden = false;
+        form.querySelectorAll<HTMLInputElement>("input:invalid").forEach((input) => input.setAttribute("aria-invalid", "true"));
+        return;
+      }
+
       const values = Object.fromEntries(
         [...new FormData(form).entries()].map(([key, value]) => [key, Number(value)])
       );
@@ -90,12 +104,18 @@ const { calculator } = Astro.props;
             <strong>${formatValue(item.value, item.format, item.unit)}</strong>
           </div>
         `).join("");
-      } catch {
-        output.innerHTML = `<p class="error">Please check the values and try again.</p>`;
+      } catch (error) {
+        output.innerHTML = "";
+        errorBox.textContent = error instanceof Error ? error.message : "Please check the values and try again.";
+        errorBox.hidden = false;
       }
     };
 
-    form.addEventListener("submit", (event) => { event.preventDefault(); update(); });
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      update();
+      if (!form.checkValidity()) form.reportValidity();
+    });
     form.addEventListener("input", update);
     form.addEventListener("reset", () => window.setTimeout(update));
     update();
@@ -113,12 +133,14 @@ const { calculator } = Astro.props;
   .result-panel .panel-heading > span { border-color: #43504b; color: #aab5b0; }
   .result-panel .eyebrow { color: var(--brand); }
   .input-grid { display: grid; gap: 1rem; grid-template-columns: 1fr 1fr; margin-bottom: 1.5rem; }
+  .form-error { background: #fff0ed; border: 1px solid #efb3a9; border-radius: 10px; color: #852f23; font-size: 0.84rem; margin: 0 0 1rem; padding: 0.75rem 0.9rem; }
   label { display: block; }
   .label-line { align-items: center; display: flex; justify-content: space-between; margin-bottom: 0.4rem; }
   .label-line strong { font-size: 0.86rem; }
   .label-line small { color: var(--muted); font-size: 0.75rem; }
   input, select { background: var(--paper); border: 1px solid var(--line); border-radius: 10px; color: var(--ink); outline: none; padding: 0.8rem; width: 100%; }
   input:focus, select:focus { border-color: var(--ink); box-shadow: 0 0 0 3px rgba(23, 35, 31, 0.08); }
+  input[aria-invalid="true"] { background: #fff7f5; border-color: var(--danger); }
   form .button { border: 0; cursor: pointer; }
   .reset { background: transparent; border: 0; color: var(--muted); cursor: pointer; font-size: 0.85rem; margin-left: 1rem; text-decoration: underline; }
   .results { display: grid; gap: 0.8rem; }
@@ -129,7 +151,6 @@ const { calculator } = Astro.props;
   .result--primary span { color: #44512a; }
   .result--primary strong { font-family: "Manrope", sans-serif; font-size: clamp(2rem, 5vw, 3.2rem); letter-spacing: -0.05em; }
   .privacy-note { color: #92a099; font-size: 0.75rem; margin: 1.5rem 0 0; }
-  :global(.error) { color: #ffaaa0; }
 
   @media (max-width: 780px) {
     .calculator { grid-template-columns: 1fr; }
