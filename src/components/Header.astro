@@ -10,6 +10,7 @@ import Logo from "@/components/Logo.astro";
     </a>
     <nav aria-label="Main navigation">
       <a href="/calculators/">All tools</a>
+      <a href="/guides/">Guides</a>
       {categories.slice(0, 4).map((category) => (
         <a href={`/${category.id}/`}>{category.shortName}</a>
       ))}

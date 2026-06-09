@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { calculate } from "../src/lib/calculations";
 import { calculators } from "../src/data/calculators";
+import { guides } from "../src/data/guides";
 
 const primary = (slug: string, values: Record<string, number>) =>
   calculate(slug, values).find((item) => item.primary)?.value;
@@ -80,5 +81,23 @@ describe("calculator catalog", () => {
     const results = calculate(calculator.slug, values);
     expect(results.length).toBeGreaterThan(0);
     for (const item of results) expect(Number.isFinite(item.value)).toBe(true);
+  });
+});
+
+describe("guide catalog", () => {
+  it("has 10 unique, sourced guides", () => {
+    expect(guides).toHaveLength(10);
+    expect(new Set(guides.map((guide) => guide.slug)).size).toBe(10);
+    for (const guide of guides) {
+      expect(guide.sections.length).toBeGreaterThanOrEqual(4);
+      expect(guide.sources.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("only links existing calculators", () => {
+    const calculatorSlugs = new Set(calculators.map((calculator) => calculator.slug));
+    for (const guide of guides) {
+      for (const slug of guide.calculatorSlugs) expect(calculatorSlugs.has(slug)).toBe(true);
+    }
   });
 });

@@ -2,9 +2,11 @@
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import CalculatorWidget from "@/components/CalculatorWidget.astro";
 import ToolCard from "@/components/ToolCard.astro";
+import GuideCard from "@/components/GuideCard.astro";
 import { calculators, calculatorsByCategory } from "@/data/calculators";
 import { categoryMap } from "@/data/categories";
 import ToolIcon from "@/components/ToolIcon.astro";
+import { guidesForCalculator } from "@/data/guides";
 
 export function getStaticPaths() {
   return calculators.map((calculator) => ({ params: { slug: calculator.slug }, props: { calculator } }));
@@ -13,6 +15,7 @@ export function getStaticPaths() {
 const { calculator } = Astro.props;
 const category = categoryMap[calculator.category];
 const related = calculatorsByCategory(calculator.category).filter((tool) => tool.slug !== calculator.slug).slice(0, 3);
+const calculatorGuides = guidesForCalculator(calculator.slug);
 const pageUrl = `https://abelost.com/calculators/${calculator.slug}/`;
 const schema = [
   {
@@ -86,6 +89,20 @@ const schema = [
     </div>
   </section>
 
+  {calculatorGuides.length > 0 && (
+    <section class="section guide-section">
+      <div class="container">
+        <div class="section-heading">
+          <div><p class="eyebrow">Learn the method</p><h2>Guides for a better estimate</h2></div>
+          <p>Understand the assumptions, practical limits, and measurement decisions behind this calculator.</p>
+        </div>
+        <div class="grid grid--3">
+          {calculatorGuides.map((guide) => <GuideCard guide={guide} compact />)}
+        </div>
+      </div>
+    </section>
+  )}
+
   <section class="faq section">
     <div class="container faq-grid">
       <div><p class="eyebrow">Common questions</p><h2>Frequently asked.</h2></div>
@@ -127,6 +144,7 @@ const schema = [
   .side-note p { color: #adbbb5; font-size: 0.9rem; }
   .side-note a { color: var(--brand); font-size: 0.85rem; font-weight: 700; }
   .faq { background: var(--surface-2); }
+  .guide-section { background: var(--surface); }
   .faq-grid { display: grid; gap: 5rem; grid-template-columns: 0.75fr 1.25fr; }
   details { border-top: 1px solid var(--line); padding: 1.25rem 0; }
   details:last-child { border-bottom: 1px solid var(--line); }

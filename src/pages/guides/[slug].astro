@@ -1,0 +1,153 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import ToolCard from "@/components/ToolCard.astro";
+import GuideCard from "@/components/GuideCard.astro";
+import { guides } from "@/data/guides";
+import { calculatorMap } from "@/data/calculators";
+import { categoryMap } from "@/data/categories";
+
+export function getStaticPaths() {
+  return guides.map((guide) => ({ params: { slug: guide.slug }, props: { guide } }));
+}
+
+const { guide } = Astro.props;
+const category = categoryMap[guide.category];
+const relatedCalculators = guide.calculatorSlugs.map((slug) => calculatorMap[slug]).filter(Boolean);
+const relatedGuides = guides.filter((item) => item.slug !== guide.slug && (
+  item.category === guide.category ||
+  item.calculatorSlugs.some((slug) => guide.calculatorSlugs.includes(slug))
+)).slice(0, 3);
+const pageUrl = `https://abelost.com/guides/${guide.slug}/`;
+const schema = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: guide.title,
+    description: guide.description,
+    datePublished: "2026-06-09",
+    dateModified: "2026-06-09",
+    mainEntityOfPage: pageUrl,
+    author: { "@type": "Organization", name: "Abelost", url: "https://abelost.com/about/" },
+    publisher: { "@type": "Organization", name: "Abelost", url: "https://abelost.com/" }
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://abelost.com/" },
+      { "@type": "ListItem", position: 2, name: "Guides", item: "https://abelost.com/guides/" },
+      { "@type": "ListItem", position: 3, name: guide.title, item: pageUrl }
+    ]
+  }
+];
+---
+
+<BaseLayout title={guide.title} description={guide.description} schema={schema}>
+  <header class="article-hero" style={`--accent:${category.accent}`}>
+    <div class="container">
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <a href="/">Home</a><span>/</span><a href="/guides/">Guides</a><span>/</span><span>{guide.title}</span>
+      </nav>
+      <div class="article-title">
+        <p class="eyebrow">{category.name} guide</p>
+        <h1>{guide.title}</h1>
+        <p>{guide.description}</p>
+        <div class="article-meta"><span>{guide.readTime}</span><span>Reviewed {guide.reviewed}</span></div>
+      </div>
+    </div>
+  </header>
+
+  <section class="article-body">
+    <div class="container article-grid">
+      <article>
+        <p class="intro">{guide.intro}</p>
+        {guide.sections.map((section, index) => (
+          <section>
+            <span class="section-number">{String(index + 1).padStart(2, "0")}</span>
+            <h2>{section.heading}</h2>
+            {section.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+            {section.bullets && <ul>{section.bullets.map((bullet) => <li>{bullet}</li>)}</ul>}
+          </section>
+        ))}
+        <div class="takeaway">
+          <span>Bottom line</span>
+          <p>{guide.takeaway}</p>
+        </div>
+        <section class="sources">
+          <h2>Sources and further reading</h2>
+          <p>Sources support the methods and practical guidance above. Product specifications and local requirements should take priority for a specific project.</p>
+          {guide.sources.map((source) => (
+            <a href={source.href} rel="noopener noreferrer">
+              <strong>{source.label}</strong>
+              <span>{source.note}</span>
+              <b aria-hidden="true">↗</b>
+            </a>
+          ))}
+        </section>
+      </article>
+      <aside>
+        <div class="sticky">
+          <p class="eyebrow">Use the numbers</p>
+          <h2>{relatedCalculators.length > 1 ? "Related calculators" : "Try the calculator"}</h2>
+          {relatedCalculators.map((calculator) => (
+            <a class="calculator-link" href={`/calculators/${calculator.slug}/`}>
+              <span>{calculator.name}</span><b aria-hidden="true">↗</b>
+            </a>
+          ))}
+          <p class="aside-note">Calculators run locally in your browser and let you replace every important assumption.</p>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  {relatedGuides.length > 0 && (
+    <section class="section related">
+      <div class="container">
+        <div class="section-heading"><div><p class="eyebrow">Continue reading</p><h2>Related guides</h2></div><a href="/guides/">View all guides →</a></div>
+        <div class="grid grid--3">{relatedGuides.map((item) => <GuideCard guide={item} compact />)}</div>
+      </div>
+    </section>
+  )}
+
+  <section class="section tools">
+    <div class="container">
+      <div class="section-heading"><div><p class="eyebrow">Put it to work</p><h2>Calculate your scenario</h2></div></div>
+      <div class="grid grid--3">{relatedCalculators.map((calculator) => <ToolCard tool={calculator} compact />)}</div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .article-hero { background: color-mix(in srgb, var(--accent) 18%, var(--paper)); padding: 3rem 0 6rem; }
+  .breadcrumbs { color: var(--muted); display: flex; flex-wrap: wrap; font-size: 0.8rem; gap: 0.55rem; margin-bottom: 5rem; }
+  .breadcrumbs a { text-decoration: none; }
+  .article-title { max-width: 920px; }
+  .article-title p:not(.eyebrow) { font-size: 1.12rem; max-width: 760px; }
+  .article-meta { color: var(--muted); display: flex; font-size: 0.78rem; gap: 1.5rem; margin-top: 2rem; }
+  .article-body { padding: 6rem 0; }
+  .article-grid { align-items: start; display: grid; gap: 7rem; grid-template-columns: minmax(0, 760px) 300px; }
+  article > .intro { color: var(--ink); font-size: 1.25rem; line-height: 1.65; margin: 0 0 4rem; }
+  article > section { border-top: 1px solid var(--line); padding: 3rem 0 1rem; position: relative; }
+  article > section h2 { font-size: 2rem; }
+  article > section p, article > section li { font-size: 1.02rem; }
+  article li { color: var(--muted); line-height: 1.7; margin-bottom: 0.65rem; }
+  .section-number { color: var(--accent); font-size: 0.74rem; font-weight: 800; left: -3rem; position: absolute; top: 3.55rem; }
+  .takeaway { background: var(--ink); border-radius: var(--radius); color: white; margin: 3rem 0; padding: 2rem; }
+  .takeaway span { color: var(--brand); font-size: 0.74rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; }
+  .takeaway p { color: white; font-family: Inter, system-ui, sans-serif; font-size: 1.35rem; font-weight: 700; line-height: 1.5; margin-bottom: 0; }
+  .sources a { align-items: center; border-top: 1px solid var(--line); display: grid; gap: 0.35rem 1rem; grid-template-columns: 1fr auto; padding: 1.1rem 0; text-decoration: none; }
+  .sources a span { color: var(--muted); font-size: 0.85rem; grid-column: 1; }
+  .sources a b { color: var(--muted); grid-column: 2; grid-row: 1 / 3; }
+  .sticky { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 1.4rem; position: sticky; top: 100px; }
+  .sticky h2 { font-size: 1.5rem; }
+  .calculator-link { align-items: center; border-top: 1px solid var(--line); display: flex; font-size: 0.9rem; font-weight: 700; justify-content: space-between; padding: 1rem 0; text-decoration: none; }
+  .calculator-link b { color: var(--accent); }
+  .aside-note { font-size: 0.78rem; margin-bottom: 0; }
+  .related { background: var(--surface-2); }
+  .section-heading a { color: var(--muted); font-weight: 700; }
+  @media (max-width: 920px) {
+    .article-grid { gap: 4rem; grid-template-columns: 1fr; }
+    .sticky { position: static; }
+    .section-number { left: 0; position: static; }
+  }
+</style>

@@ -1,0 +1,59 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import GuideCard from "@/components/GuideCard.astro";
+import { categories } from "@/data/categories";
+import { guides } from "@/data/guides";
+---
+
+<BaseLayout
+  title="Practical Guides"
+  description="Clear guides for measuring projects, estimating energy and vehicle costs, and understanding small-business calculations."
+>
+  <header class="guide-hero">
+    <div class="container hero-grid">
+      <div>
+        <p class="eyebrow">Learn the method</p>
+        <h1>Practical guides,<br />without the fog.</h1>
+      </div>
+      <p>Understand the assumptions behind common estimates, avoid expensive input mistakes, and know when a simple calculator is no longer enough.</p>
+    </div>
+  </header>
+
+  <section class="section">
+    <div class="container">
+      <div class="guide-filter" aria-label="Guide categories">
+        <a href="/guides/">All guides</a>
+        {categories.map((category) => <a href={`#${category.id}`}>{category.shortName}</a>)}
+      </div>
+      {categories.map((category) => {
+        const categoryGuides = guides.filter((guide) => guide.category === category.id);
+        if (categoryGuides.length === 0) return null;
+        return (
+          <section class="guide-group" id={category.id}>
+            <div class="section-heading">
+              <div><p class="eyebrow" style={`color:${category.accent}`}>{category.shortName}</p><h2>{category.name}</h2></div>
+              <p>{category.description}</p>
+            </div>
+            <div class="grid grid--3">
+              {categoryGuides.map((guide) => <GuideCard guide={guide} />)}
+            </div>
+          </section>
+        );
+      })}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .guide-hero { background: var(--ink); color: white; padding: 6rem 0; }
+  .hero-grid { align-items: end; display: grid; gap: 5rem; grid-template-columns: 1fr 0.8fr; }
+  .guide-hero .eyebrow { color: var(--brand); }
+  .guide-hero p:last-child { color: #b3c0ba; font-size: 1.08rem; }
+  .guide-filter { border-bottom: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 5rem; padding-bottom: 1.2rem; }
+  .guide-filter a { border: 1px solid var(--line); border-radius: 999px; color: var(--muted); font-size: 0.82rem; font-weight: 700; padding: 0.55rem 0.9rem; text-decoration: none; }
+  .guide-filter a:hover { background: var(--ink); color: white; }
+  .guide-group { margin-bottom: 6rem; scroll-margin-top: 100px; }
+  @media (max-width: 720px) {
+    .hero-grid { grid-template-columns: 1fr; gap: 1rem; }
+  }
+</style>

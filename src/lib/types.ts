@@ -43,3 +43,29 @@ export interface CalculatorDefinition {
   faq: Array<{ question: string; answer: string }>;
   keywords: string[];
 }
+
+export interface GuideSection {
+  heading: string;
+  paragraphs: string[];
+  bullets?: string[];
+}
+
+export interface GuideSource {
+  label: string;
+  href: string;
+  note: string;
+}
+
+export interface GuideDefinition {
+  slug: string;
+  title: string;
+  category: CategoryId;
+  calculatorSlugs: string[];
+  description: string;
+  intro: string;
+  readTime: string;
+  reviewed: string;
+  sections: GuideSection[];
+  takeaway: string;
+  sources: GuideSource[];
+}

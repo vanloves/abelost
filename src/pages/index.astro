@@ -1,12 +1,19 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import ToolCard from "@/components/ToolCard.astro";
+import GuideCard from "@/components/GuideCard.astro";
 import { categories } from "@/data/categories";
 import { calculators } from "@/data/calculators";
+import { guides } from "@/data/guides";
 
 const featured = ["paint", "electricity-cost", "fuel-cost", "profit-margin", "mulch", "ev-charging"]
   .map((slug) => calculators.find((tool) => tool.slug === slug))
   .filter((tool) => tool !== undefined);
+const featuredGuides = [
+  "how-much-paint-do-i-need",
+  "how-to-calculate-electricity-cost",
+  "break-even-analysis-guide"
+].map((slug) => guides.find((guide) => guide.slug === slug)).filter((guide) => guide !== undefined);
 ---
 
 <BaseLayout
@@ -80,6 +87,21 @@ const featured = ["paint", "electricity-cost", "fuel-cost", "profit-margin", "mu
     </div>
   </section>
 
+  <section class="section guide-preview">
+    <div class="container">
+      <div class="section-heading">
+        <div><p class="eyebrow">Planning guides</p><h2>Know what the number means.</h2></div>
+        <div class="guide-heading-copy">
+          <p>Practical explanations for measurements, assumptions, and common estimating mistakes.</p>
+          <a href="/guides/">Browse all guides →</a>
+        </div>
+      </div>
+      <div class="grid grid--3">
+        {featuredGuides.map((guide) => <GuideCard guide={guide} />)}
+      </div>
+    </div>
+  </section>
+
   <section class="principles section">
     <div class="container principles-grid">
       <div>
@@ -135,6 +157,10 @@ const featured = ["paint", "electricity-cost", "fuel-cost", "profit-margin", "mu
   .category-grid small { color: var(--muted); font-size: 0.72rem; margin-top: 0.15rem; }
   .category-grid b { color: var(--muted); }
   .principles { background: var(--brand-dark); color: white; }
+  .guide-preview { background: var(--surface-2); }
+  .guide-heading-copy { max-width: 480px; }
+  .guide-heading-copy p { margin-top: 0; }
+  .guide-heading-copy a { color: var(--ink); font-weight: 700; }
   .principles .eyebrow { color: var(--brand); }
   .principles p { color: #b4c1bb; }
   .principles-grid { display: grid; gap: 6rem; grid-template-columns: 0.9fr 1.1fr; }

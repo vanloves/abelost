@@ -1,0 +1,45 @@
+---
+import { categoryMap } from "@/data/categories";
+import type { GuideDefinition } from "@/lib/types";
+
+interface Props {
+  guide: GuideDefinition;
+  compact?: boolean;
+}
+
+const { guide, compact = false } = Astro.props;
+const category = categoryMap[guide.category];
+---
+
+<a class:list={["guide-card", "card", { compact }]} href={`/guides/${guide.slug}/`} style={`--accent:${category.accent}`}>
+  <div class="guide-meta">
+    <span>{category.shortName}</span>
+    <small>{guide.readTime}</small>
+  </div>
+  <div>
+    <h3>{guide.title}</h3>
+    {!compact && <p>{guide.description}</p>}
+  </div>
+  <span class="guide-link">Read guide <b aria-hidden="true">↗</b></span>
+</a>
+
+<style>
+  .guide-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 285px;
+    padding: 1.5rem;
+    text-decoration: none;
+    transition: box-shadow 160ms ease, transform 160ms ease;
+  }
+  .guide-card:hover { box-shadow: var(--shadow); transform: translateY(-4px); }
+  .guide-meta { align-items: center; display: flex; justify-content: space-between; }
+  .guide-meta span { color: var(--accent); font-size: 0.73rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; }
+  .guide-meta small { color: var(--muted); }
+  h3 { font-size: 1.55rem; }
+  p { font-size: 0.92rem; margin-bottom: 0; }
+  .guide-link { align-items: center; display: flex; font-size: 0.84rem; font-weight: 700; justify-content: space-between; }
+  .guide-link b { color: var(--muted); }
+  .compact { min-height: 210px; }
+</style>
