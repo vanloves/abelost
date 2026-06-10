@@ -15,7 +15,7 @@ const { calculator } = Astro.props;
       </div>
     </div>
     <form>
-      <p class="form-error" data-form-error role="alert" hidden></p>
+      <p class="form-error" data-form-error role="alert" tabindex="-1" hidden></p>
       <div class="input-grid">
         {calculator.inputs.map((input) => (
           <label>
@@ -80,7 +80,7 @@ const { calculator } = Astro.props;
     const slug = widget.dataset.slug;
     if (!form || !output || !errorBox || !slug) return;
 
-    const update = () => {
+    const update = (focusError = false) => {
       errorBox.hidden = true;
       errorBox.textContent = "";
       widget.querySelectorAll("input").forEach((input) => input.removeAttribute("aria-invalid"));
@@ -90,6 +90,7 @@ const { calculator } = Astro.props;
         errorBox.textContent = "Check the highlighted fields and enter values within the allowed range.";
         errorBox.hidden = false;
         form.querySelectorAll<HTMLInputElement>("input:invalid").forEach((input) => input.setAttribute("aria-invalid", "true"));
+        if (focusError) errorBox.focus();
         return;
       }
 
@@ -108,16 +109,17 @@ const { calculator } = Astro.props;
         output.innerHTML = "";
         errorBox.textContent = error instanceof Error ? error.message : "Please check the values and try again.";
         errorBox.hidden = false;
+        if (focusError) errorBox.focus();
       }
     };
 
     form.addEventListener("submit", (event) => {
       event.preventDefault();
-      update();
+      update(true);
       if (!form.checkValidity()) form.reportValidity();
     });
-    form.addEventListener("input", update);
-    form.addEventListener("reset", () => window.setTimeout(update));
+    form.addEventListener("input", () => update());
+    form.addEventListener("reset", () => window.setTimeout(() => update()));
     update();
   });
 </script>

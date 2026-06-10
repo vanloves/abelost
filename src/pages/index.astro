@@ -9,10 +9,10 @@ import { guides } from "@/data/guides";
 const featured = ["paint", "electricity-cost", "fuel-cost", "profit-margin", "mulch", "ev-charging"]
   .map((slug) => calculators.find((tool) => tool.slug === slug))
   .filter((tool) => tool !== undefined);
-const featuredGuides = [
-  "how-much-paint-do-i-need",
-  "how-to-calculate-electricity-cost",
-  "break-even-analysis-guide"
+const recentGuides = [
+  "what-is-roas-and-how-to-calculate-it",
+  "space-heater-electricity-cost",
+  "grass-seed-vs-sod-how-much-to-buy"
 ].map((slug) => guides.find((guide) => guide.slug === slug)).filter((guide) => guide !== undefined);
 ---
 
@@ -90,14 +90,14 @@ const featuredGuides = [
   <section class="section guide-preview">
     <div class="container">
       <div class="section-heading">
-        <div><p class="eyebrow">Planning guides</p><h2>Know what the number means.</h2></div>
+        <div><p class="eyebrow">Recently added</p><h2>Fresh guidance for better inputs.</h2></div>
         <div class="guide-heading-copy">
-          <p>Practical explanations for measurements, assumptions, and common estimating mistakes.</p>
+          <p>New explanations for advertising returns, heater energy use, and choosing between seed and sod.</p>
           <a href="/guides/">Browse all guides →</a>
         </div>
       </div>
       <div class="grid grid--3">
-        {featuredGuides.map((guide) => <GuideCard guide={guide} />)}
+        {recentGuides.map((guide) => <GuideCard guide={guide} />)}
       </div>
     </div>
   </section>

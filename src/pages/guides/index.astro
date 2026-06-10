@@ -3,6 +3,12 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import GuideCard from "@/components/GuideCard.astro";
 import { categories } from "@/data/categories";
 import { guides } from "@/data/guides";
+
+const recommendedGuides = [
+  "how-much-paint-do-i-need",
+  "how-to-calculate-electricity-cost",
+  "markup-vs-margin"
+].map((slug) => guides.find((guide) => guide.slug === slug)).filter((guide) => guide !== undefined);
 ---
 
 <BaseLayout
@@ -21,6 +27,15 @@ import { guides } from "@/data/guides";
 
   <section class="section">
     <div class="container">
+      <section class="recommended">
+        <div class="section-heading">
+          <div><p class="eyebrow">Recommended starting points</p><h2>Three useful methods to know.</h2></div>
+          <p>Start with measuring surfaces, converting energy use, or separating markup from margin.</p>
+        </div>
+        <div class="grid grid--3">
+          {recommendedGuides.map((guide) => <GuideCard guide={guide} compact />)}
+        </div>
+      </section>
       <div class="guide-filter" aria-label="Guide categories">
         <a href="/guides/">All guides</a>
         {categories.map((category) => <a href={`#${category.id}`}>{category.shortName}</a>)}
@@ -50,6 +65,7 @@ import { guides } from "@/data/guides";
   .guide-hero .eyebrow { color: var(--brand); }
   .guide-hero p:last-child { color: #b3c0ba; font-size: 1.08rem; }
   .guide-filter { border-bottom: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 5rem; padding-bottom: 1.2rem; }
+  .recommended { background: var(--surface-2); border-radius: var(--radius); margin-bottom: 5rem; padding: clamp(1.25rem, 4vw, 2.5rem); }
   .guide-filter a { border: 1px solid var(--line); border-radius: 999px; color: var(--muted); font-size: 0.82rem; font-weight: 700; padding: 0.55rem 0.9rem; text-decoration: none; }
   .guide-filter a:hover { background: var(--ink); color: white; }
   .guide-group { margin-bottom: 6rem; scroll-margin-top: 100px; }

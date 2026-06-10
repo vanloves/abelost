@@ -40,7 +40,7 @@ const searchItems = [
       <button class="icon-button search-button" type="button" data-search-open aria-label="Search Abelost">
         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"></circle><path d="m16 16 4 4"></path></svg>
       </button>
-      <a class="browse" href="/calculators/">Browse 25 tools <span aria-hidden="true">↗</span></a>
+      <a class="browse" href="/calculators/">Browse {calculatorCount} tools <span aria-hidden="true">↗</span></a>
       <button class="icon-button menu-button" type="button" data-menu-open aria-label="Open menu" aria-expanded="false">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>
       </button>
@@ -67,11 +67,12 @@ const searchItems = [
   </div>
 </dialog>
 
-<div class="mobile-panel" data-mobile-panel hidden>
+<dialog class="mobile-panel" data-mobile-panel aria-labelledby="mobile-menu-title">
   <div class="mobile-panel-head">
     <Logo />
     <button class="close-button" type="button" data-menu-close aria-label="Close menu">×</button>
   </div>
+  <h2 class="sr-only" id="mobile-menu-title">Site menu</h2>
   <nav aria-label="Mobile navigation">
     <a href="/calculators/"><span>All calculators</span><b>{calculatorCount} tools</b></a>
     <a href="/guides/"><span>Practical guides</span><b>{guideCount} guides</b></a>
@@ -82,9 +83,10 @@ const searchItems = [
   <div class="mobile-links">
     <a href="/about/">About</a>
     <a href="/methodology/">Methodology</a>
+    <a href="/editorial-policy/">Editorial policy</a>
     <a href="/contact/">Contact</a>
   </div>
-</div>
+</dialog>
 
 <script is:inline define:vars={{ searchItems, calculatorCount, guideCount }}>
   const searchDialog = document.querySelector("[data-search-dialog]");
@@ -93,6 +95,7 @@ const searchItems = [
   const searchStatus = document.querySelector("[data-search-status]");
   const mobilePanel = document.querySelector("[data-mobile-panel]");
   const menuButton = document.querySelector("[data-menu-open]");
+  const menuCloseButton = document.querySelector("[data-menu-close]");
 
   const escapeHtml = (value) => value.replace(/[&<>"']/g, (character) => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
@@ -133,18 +136,27 @@ const searchItems = [
   searchInput?.addEventListener("input", renderSearch);
 
   const closeMenu = () => {
-    if (!(mobilePanel instanceof HTMLElement)) return;
-    mobilePanel.hidden = true;
+    if (!(mobilePanel instanceof HTMLDialogElement)) return;
+    mobilePanel.close();
     document.body.classList.remove("menu-open");
     menuButton?.setAttribute("aria-expanded", "false");
+    if (menuButton instanceof HTMLElement) menuButton.focus();
   };
   menuButton?.addEventListener("click", () => {
-    if (!(mobilePanel instanceof HTMLElement)) return;
-    mobilePanel.hidden = false;
+    if (!(mobilePanel instanceof HTMLDialogElement)) return;
+    mobilePanel.showModal();
     document.body.classList.add("menu-open");
     menuButton.setAttribute("aria-expanded", "true");
+    window.setTimeout(() => menuCloseButton instanceof HTMLElement && menuCloseButton.focus());
   });
-  document.querySelector("[data-menu-close]")?.addEventListener("click", closeMenu);
+  menuCloseButton?.addEventListener("click", closeMenu);
+  mobilePanel?.addEventListener("close", () => {
+    document.body.classList.remove("menu-open");
+    menuButton?.setAttribute("aria-expanded", "false");
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && mobilePanel instanceof HTMLDialogElement && mobilePanel.open) closeMenu();
+  });
   mobilePanel?.querySelectorAll("a").forEach((link) => link.addEventListener("click", closeMenu));
 </script>
 
@@ -187,7 +199,8 @@ const searchItems = [
   .search-results :global(strong) { margin: 0.15rem 0; }
   .search-results :global(em) { color: var(--muted); font-size: 0.78rem; font-style: normal; line-height: 1.4; }
   .search-results :global(b) { color: var(--muted); }
-  .mobile-panel { background: var(--paper); inset: 0; overflow-y: auto; padding: 1.2rem; position: fixed; z-index: 100; }
+  .mobile-panel { background: var(--paper); border: 0; height: 100%; inset: 0; margin: 0; max-height: none; max-width: none; overflow-y: auto; padding: 1.2rem; position: fixed; width: 100%; }
+  .mobile-panel::backdrop { background: var(--paper); }
   .mobile-panel-head { align-items: center; display: flex; justify-content: space-between; }
   .mobile-panel nav { border-top: 1px solid var(--line); margin-top: 2rem; }
   .mobile-panel nav a { align-items: center; border-bottom: 1px solid var(--line); display: flex; font-family: Inter, system-ui, sans-serif; font-size: 1.35rem; font-weight: 750; justify-content: space-between; padding: 1.1rem 0; text-decoration: none; }

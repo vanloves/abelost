@@ -1,5 +1,11 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import ToolCard from "@/components/ToolCard.astro";
+import { calculators } from "@/data/calculators";
+
+const popularTools = ["paint", "electricity-cost", "fuel-cost"]
+  .map((slug) => calculators.find((tool) => tool.slug === slug))
+  .filter((tool) => tool !== undefined);
 ---
 
 <BaseLayout title="Page Not Found" description="The requested Abelost page could not be found." noindex>
@@ -8,7 +14,16 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
       <p class="code">404</p>
       <h1>That number<br />doesn’t add up.</h1>
       <p>The page may have moved, or the address may be incorrect.</p>
-      <a class="button" href="/calculators/">Browse calculators</a>
+      <div class="actions">
+        <a class="button" href="/">Return home</a>
+        <a class="text-link" href="/guides/">Browse guides →</a>
+      </div>
+      <div class="popular">
+        <h2>Try a popular calculator</h2>
+        <div class="grid grid--3">
+          {popularTools.map((tool) => <ToolCard tool={tool} compact />)}
+        </div>
+      </div>
     </div>
   </section>
 </BaseLayout>
@@ -17,4 +32,8 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
   .not-found { background: var(--surface-2); min-height: 70vh; padding: 7rem 0; text-align: center; }
   .code { color: #547461; font-family: "Manrope"; font-size: 1rem; font-weight: 800; letter-spacing: 0.15em; }
   .not-found p:not(.code) { margin: 1.5rem auto; max-width: 500px; }
+  .actions { align-items: center; display: flex; flex-wrap: wrap; gap: 1.2rem; justify-content: center; }
+  .text-link { font-weight: 700; }
+  .popular { margin-top: 6rem; text-align: left; }
+  .popular h2 { font-size: 1.8rem; margin-bottom: 1.5rem; text-align: center; }
 </style>
