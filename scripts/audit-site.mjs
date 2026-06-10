@@ -1,5 +1,13 @@
 const origin = process.env.AUDIT_ORIGIN || "https://abelost.com";
-const sitemapUrl = new URL("/sitemap-0.xml", origin).href;
+const fetchOrigin = process.env.AUDIT_FETCH_ORIGIN || origin;
+const originUrl = new URL(origin);
+const sitemapUrl = new URL("/sitemap-0.xml", fetchOrigin).href;
+
+const toFetchUrl = (url) => {
+  const resolved = new URL(url);
+  if (resolved.origin !== originUrl.origin) return resolved.href;
+  return new URL(`${resolved.pathname}${resolved.search}`, fetchOrigin).href;
+};
 
 const decode = (value = "") =>
   value
@@ -29,12 +37,15 @@ const internalLinks = new Set();
 const issues = [];
 
 for (const url of urls) {
-  const { response, body } = await fetchText(url);
+  const { response, body } = await fetchText(toFetchUrl(url));
   const title = text(match(body, /<title>([\s\S]*?)<\/title>/i));
   const description = decode(match(body, /<meta\s+name="description"\s+content="([^"]*)"/i));
   const canonical = decode(match(body, /<link\s+rel="canonical"\s+href="([^"]+)"/i));
   const h1s = [...body.matchAll(/<h1[^>]*>([\s\S]*?)<\/h1>/gi)].map((item) => text(item[1]));
   const schemas = [...body.matchAll(/<script[^>]+type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/gi)];
+  const documentMarkup = body
+    .replace(/<script[\s\S]*?<\/script>/gi, "")
+    .replace(/<style[\s\S]*?<\/style>/gi, "");
 
   pages.push({ url, status: response.status, title, description, canonical, h1s, schemas: schemas.length });
 
@@ -54,11 +65,11 @@ for (const url of urls) {
     }
   }
 
-  for (const link of body.matchAll(/<a[^>]+href="([^"]+)"/gi)) {
+  for (const link of documentMarkup.matchAll(/<a[^>]+href="([^"]+)"/gi)) {
     const href = decode(link[1]);
     if (href.startsWith("mailto:") || href.startsWith("tel:") || href.startsWith("#")) continue;
     const resolved = new URL(href, url);
-    if (resolved.origin === new URL(origin).origin) {
+    if (resolved.origin === originUrl.origin) {
       resolved.hash = "";
       internalLinks.add(resolved.href);
     }
@@ -67,7 +78,7 @@ for (const url of urls) {
 
 const linkIssues = [];
 for (const url of internalLinks) {
-  const response = await fetch(url, { redirect: "manual", headers: { "user-agent": "Abelost site audit/1.0" } });
+  const response = await fetch(toFetchUrl(url), { redirect: "manual", headers: { "user-agent": "Abelost site audit/1.0" } });
   if (![200, 301, 302, 307, 308].includes(response.status)) linkIssues.push(`${url}: status ${response.status}`);
 }
 

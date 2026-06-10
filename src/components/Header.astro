@@ -4,6 +4,8 @@ import { calculators } from "@/data/calculators";
 import { guides } from "@/data/guides";
 import Logo from "@/components/Logo.astro";
 
+const calculatorCount = calculators.length;
+const guideCount = guides.length;
 const searchItems = [
   ...calculators.map((tool) => ({
     title: tool.name,
@@ -60,7 +62,7 @@ const searchItems = [
       <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"></circle><path d="m16 16 4 4"></path></svg>
       <input type="search" placeholder="Try paint, energy, mileage, margin..." autocomplete="off" data-search-input />
     </label>
-    <p class="search-status" data-search-status>Type to search 25 calculators and 10 guides.</p>
+    <p class="search-status" data-search-status>Type to search {calculatorCount} calculators and {guideCount} guides.</p>
     <div class="search-results" data-search-results></div>
   </div>
 </dialog>
@@ -71,8 +73,8 @@ const searchItems = [
     <button class="close-button" type="button" data-menu-close aria-label="Close menu">×</button>
   </div>
   <nav aria-label="Mobile navigation">
-    <a href="/calculators/"><span>All calculators</span><b>25 tools</b></a>
-    <a href="/guides/"><span>Practical guides</span><b>10 guides</b></a>
+    <a href="/calculators/"><span>All calculators</span><b>{calculatorCount} tools</b></a>
+    <a href="/guides/"><span>Practical guides</span><b>{guideCount} guides</b></a>
     {categories.map((category) => (
       <a href={`/${category.id}/`}><span>{category.name}</span><b>Explore</b></a>
     ))}
@@ -84,7 +86,7 @@ const searchItems = [
   </div>
 </div>
 
-<script is:inline define:vars={{ searchItems }}>
+<script is:inline define:vars={{ searchItems, calculatorCount, guideCount }}>
   const searchDialog = document.querySelector("[data-search-dialog]");
   const searchInput = document.querySelector("[data-search-input]");
   const searchResults = document.querySelector("[data-search-results]");
@@ -101,7 +103,7 @@ const searchItems = [
     const query = searchInput.value.trim().toLowerCase();
     if (!query) {
       searchResults.innerHTML = "";
-      searchStatus.textContent = "Type to search 25 calculators and 10 guides.";
+      searchStatus.textContent = `Type to search ${calculatorCount} calculators and ${guideCount} guides.`;
       return;
     }
     const matches = searchItems.filter((item) =>

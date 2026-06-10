@@ -1,6 +1,7 @@
 import type { GuideDefinition } from "@/lib/types";
+import { expandedGuides } from "./guide-expansion";
 
-export const guides: GuideDefinition[] = [
+const coreGuides: GuideDefinition[] = [
   {
     slug: "how-much-paint-do-i-need",
     title: "How Much Paint Do I Need?",
@@ -547,6 +548,8 @@ export const guides: GuideDefinition[] = [
     ]
   }
 ];
+
+export const guides: GuideDefinition[] = [...coreGuides, ...expandedGuides];
 
 export const guideMap = Object.fromEntries(
   guides.map((guide) => [guide.slug, guide])

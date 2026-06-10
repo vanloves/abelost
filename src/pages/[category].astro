@@ -1,8 +1,10 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import ToolCard from "@/components/ToolCard.astro";
+import GuideCard from "@/components/GuideCard.astro";
 import { categories } from "@/data/categories";
 import { calculatorsByCategory } from "@/data/calculators";
+import { guides } from "@/data/guides";
 
 export function getStaticPaths() {
   return categories.map((category) => ({ params: { category: category.id }, props: { category } }));
@@ -10,6 +12,7 @@ export function getStaticPaths() {
 
 const { category } = Astro.props;
 const tools = calculatorsByCategory(category.id);
+const categoryGuides = guides.filter((guide) => guide.category === category.id);
 ---
 
 <BaseLayout title={`${category.name} Calculators`} description={`${category.description} Browse ${tools.length} free tools with clear formulas and editable assumptions.`}>
@@ -34,6 +37,17 @@ const tools = calculatorsByCategory(category.id);
       </div>
     </div>
   </section>
+  <section class="section category-guides">
+    <div class="container">
+      <div class="section-heading">
+        <div><p class="eyebrow">Understand the method</p><h2>{category.shortName} planning guides</h2></div>
+        <p>Use the calculators for the number, then check the measurement choices, assumptions, and practical limits behind it.</p>
+      </div>
+      <div class="grid grid--3">
+        {categoryGuides.map((guide) => <GuideCard guide={guide} compact />)}
+      </div>
+    </div>
+  </section>
   <section class="category-note">
     <div class="container note-grid">
       <h2>Plan with context,<br />not false precision.</h2>
@@ -52,6 +66,7 @@ const tools = calculatorsByCategory(category.id);
   .count-card { align-items: center; background: var(--ink); border-radius: var(--radius); color: white; display: flex; flex-direction: column; height: 190px; justify-content: center; width: 190px; }
   .count-card strong { color: var(--accent); font-family: "Manrope"; font-size: 4.2rem; letter-spacing: -0.08em; line-height: 1; }
   .count-card span { color: #aebbb5; font-size: 0.8rem; margin-top: 0.5rem; text-transform: uppercase; }
+  .category-guides { background: var(--surface-2); }
   .category-note { background: var(--ink); color: white; padding: 5rem 0; }
   .note-grid { align-items: center; display: grid; gap: 5rem; grid-template-columns: 1fr 1fr; }
   .note-grid p { color: #b3c0ba; }

@@ -18,14 +18,15 @@ const relatedGuides = guides.filter((item) => item.slug !== guide.slug && (
   item.calculatorSlugs.some((slug) => guide.calculatorSlugs.includes(slug))
 )).slice(0, 3);
 const pageUrl = `https://abelost.com/guides/${guide.slug}/`;
+const reviewedDate = new Date(`${guide.reviewed} UTC`).toISOString().slice(0, 10);
 const schema = [
   {
     "@context": "https://schema.org",
     "@type": "Article",
     headline: guide.title,
     description: guide.description,
-    datePublished: "2026-06-09",
-    dateModified: "2026-06-09",
+    datePublished: reviewedDate,
+    dateModified: reviewedDate,
     mainEntityOfPage: pageUrl,
     author: { "@type": "Organization", name: "Abelost", url: "https://abelost.com/about/" },
     publisher: { "@type": "Organization", name: "Abelost", url: "https://abelost.com/" }

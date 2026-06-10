@@ -94,9 +94,9 @@ describe("calculator catalog", () => {
 });
 
 describe("guide catalog", () => {
-  it("has 10 unique, sourced guides", () => {
-    expect(guides).toHaveLength(10);
-    expect(new Set(guides.map((guide) => guide.slug)).size).toBe(10);
+  it("has 17 unique, sourced guides", () => {
+    expect(guides).toHaveLength(17);
+    expect(new Set(guides.map((guide) => guide.slug)).size).toBe(17);
     for (const guide of guides) {
       expect(guide.sections.length).toBeGreaterThanOrEqual(4);
       expect(guide.sources.length).toBeGreaterThan(0);
@@ -108,5 +108,10 @@ describe("guide catalog", () => {
     for (const guide of guides) {
       for (const slug of guide.calculatorSlugs) expect(calculatorSlugs.has(slug)).toBe(true);
     }
+  });
+
+  it("provides at least one guide for every calculator", () => {
+    const coveredSlugs = new Set(guides.flatMap((guide) => guide.calculatorSlugs));
+    for (const calculator of calculators) expect(coveredSlugs.has(calculator.slug)).toBe(true);
   });
 });
