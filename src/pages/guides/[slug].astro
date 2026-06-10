@@ -5,6 +5,7 @@ import GuideCard from "@/components/GuideCard.astro";
 import { guides } from "@/data/guides";
 import { calculatorMap } from "@/data/calculators";
 import { categoryMap } from "@/data/categories";
+import { guideFaq } from "@/data/guide-faq";
 
 export function getStaticPaths() {
   return guides.map((guide) => ({ params: { slug: guide.slug }, props: { guide } }));
@@ -12,6 +13,7 @@ export function getStaticPaths() {
 
 const { guide } = Astro.props;
 const category = categoryMap[guide.category];
+const faq = guideFaq[guide.slug];
 const relatedCalculators = guide.calculatorSlugs.map((slug) => calculatorMap[slug]).filter(Boolean);
 const relatedGuides = guides.filter((item) => item.slug !== guide.slug && (
   item.category === guide.category ||
@@ -30,6 +32,15 @@ const schema = [
     mainEntityOfPage: pageUrl,
     author: { "@type": "Organization", name: "Abelost", url: "https://abelost.com/about/" },
     publisher: { "@type": "Organization", name: "Abelost", url: "https://abelost.com/" }
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faq.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: { "@type": "Answer", text: item.answer }
+    }))
   },
   {
     "@context": "https://schema.org",
@@ -74,6 +85,15 @@ const schema = [
           <span>Bottom line</span>
           <p>{guide.takeaway}</p>
         </div>
+        <section class="guide-faq">
+          <h2>Frequently asked questions</h2>
+          {faq.map((item) => (
+            <details>
+              <summary>{item.question}<span aria-hidden="true">+</span></summary>
+              <p>{item.answer}</p>
+            </details>
+          ))}
+        </section>
         <section class="sources">
           <h2>Sources and further reading</h2>
           <p>Sources support the methods and practical guidance above. Product specifications and local requirements should take priority for a specific project.</p>
@@ -136,6 +156,12 @@ const schema = [
   .takeaway { background: var(--ink); border-radius: var(--radius); color: white; margin: 3rem 0; padding: 2rem; }
   .takeaway span { color: var(--brand); font-size: 0.74rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; }
   .takeaway p { color: white; font-family: Inter, system-ui, sans-serif; font-size: 1.35rem; font-weight: 700; line-height: 1.5; margin-bottom: 0; }
+  .guide-faq details { border-top: 1px solid var(--line); padding: 1.2rem 0; }
+  .guide-faq details:last-child { border-bottom: 1px solid var(--line); }
+  .guide-faq summary { cursor: pointer; display: flex; font-weight: 700; gap: 1rem; justify-content: space-between; list-style: none; }
+  .guide-faq summary::-webkit-details-marker { display: none; }
+  .guide-faq summary span { font-size: 1.2rem; }
+  .guide-faq details p { margin-bottom: 0; }
   .sources a { align-items: center; border-top: 1px solid var(--line); display: grid; gap: 0.35rem 1rem; grid-template-columns: 1fr auto; padding: 1.1rem 0; text-decoration: none; }
   .sources a span { color: var(--muted); font-size: 0.85rem; grid-column: 1; }
   .sources a b { color: var(--muted); grid-column: 2; grid-row: 1 / 3; }

@@ -2,6 +2,8 @@ import { describe, expect, it } from "vitest";
 import { calculate } from "../src/lib/calculations";
 import { calculators } from "../src/data/calculators";
 import { guides } from "../src/data/guides";
+import { calculatorPageContent } from "../src/data/calculator-content";
+import { guideFaq } from "../src/data/guide-faq";
 
 const primary = (slug: string, values: Record<string, number>) =>
   calculate(slug, values).find((item) => item.primary)?.value;
@@ -91,6 +93,18 @@ describe("calculator catalog", () => {
       coats: 2, coverage: 350, waste: 10, price: 40
     })).toThrow("Doors and windows must be smaller than the total wall area.");
   });
+
+  it("provides specific page guidance for every calculator", () => {
+    expect(Object.keys(calculatorPageContent).sort()).toEqual(
+      calculators.map((calculator) => calculator.slug).sort()
+    );
+    for (const content of Object.values(calculatorPageContent)) {
+      expect(content.steps.length).toBeGreaterThanOrEqual(3);
+      expect(content.mistakes.length).toBeGreaterThanOrEqual(3);
+      expect(content.tip.heading.length).toBeGreaterThan(0);
+      expect(content.tip.body.length).toBeGreaterThan(0);
+    }
+  });
 });
 
 describe("guide catalog", () => {
@@ -113,5 +127,16 @@ describe("guide catalog", () => {
   it("provides at least one guide for every calculator", () => {
     const coveredSlugs = new Set(guides.flatMap((guide) => guide.calculatorSlugs));
     for (const calculator of calculators) expect(coveredSlugs.has(calculator.slug)).toBe(true);
+  });
+
+  it("provides visible FAQ content for every guide", () => {
+    expect(Object.keys(guideFaq).sort()).toEqual(guides.map((guide) => guide.slug).sort());
+    for (const faq of Object.values(guideFaq)) {
+      expect(faq.length).toBeGreaterThanOrEqual(2);
+      for (const item of faq) {
+        expect(item.question.length).toBeGreaterThan(0);
+        expect(item.answer.length).toBeGreaterThan(0);
+      }
+    }
   });
 });

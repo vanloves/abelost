@@ -42,21 +42,7 @@ function define(
     formula,
     example,
     assumptions,
-    keywords: [name.toLowerCase(), `${category} calculator`, "free online calculator"],
-    faq: [
-      {
-        question: `How accurate is the ${name}?`,
-        answer: "The result is a planning estimate based on the measurements and rates you enter. Verify package coverage, local prices, and project conditions before purchasing."
-      },
-      {
-        question: "Should I round the result up?",
-        answer: "For materials sold only in whole packages, round up to the next available package size. A waste allowance can also cover cuts, breakage, and measurement variation."
-      },
-      {
-        question: "Does Abelost store my inputs?",
-        answer: "No. The calculation runs locally in your browser and your project values are not sent to Abelost."
-      }
-    ]
+    keywords: [name.toLowerCase(), `${category} calculator`, "free online calculator"]
   };
 }
 

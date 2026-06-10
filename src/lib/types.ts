@@ -41,7 +41,6 @@ export interface CalculatorDefinition {
   formula: string;
   example: string;
   assumptions: string[];
-  faq: Array<{ question: string; answer: string }>;
   keywords: string[];
 }
 
@@ -55,6 +54,20 @@ export interface GuideSource {
   label: string;
   href: string;
   note: string;
+}
+
+export interface ContentFaq {
+  question: string;
+  answer: string;
+}
+
+export interface CalculatorPageContent {
+  steps: string[];
+  mistakes: string[];
+  tip: {
+    heading: string;
+    body: string;
+  };
 }
 
 export interface GuideDefinition {

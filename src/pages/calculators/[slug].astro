@@ -7,6 +7,7 @@ import { calculators, calculatorsByCategory } from "@/data/calculators";
 import { categoryMap } from "@/data/categories";
 import ToolIcon from "@/components/ToolIcon.astro";
 import { guidesForCalculator } from "@/data/guides";
+import { calculatorPageContent } from "@/data/calculator-content";
 
 export function getStaticPaths() {
   return calculators.map((calculator) => ({ params: { slug: calculator.slug }, props: { calculator } }));
@@ -16,6 +17,21 @@ const { calculator } = Astro.props;
 const category = categoryMap[calculator.category];
 const related = calculatorsByCategory(calculator.category).filter((tool) => tool.slug !== calculator.slug).slice(0, 3);
 const calculatorGuides = guidesForCalculator(calculator.slug);
+const pageContent = calculatorPageContent[calculator.slug];
+const calculatorFaq = [
+  {
+    question: `What inputs matter most for the ${calculator.name}?`,
+    answer: `${pageContent.steps.join(" ")} Replace every default with values from your own project or records.`
+  },
+  {
+    question: `What common mistakes affect this ${calculator.name.toLowerCase()}?`,
+    answer: pageContent.mistakes.join(" ")
+  },
+  {
+    question: "Does Abelost store my inputs?",
+    answer: "No. The calculation runs locally in your browser and your project values are not sent to Abelost."
+  }
+];
 const pageUrl = `https://abelost.com/calculators/${calculator.slug}/`;
 const schema = [
   {
@@ -31,10 +47,21 @@ const schema = [
   {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: calculator.faq.map((item) => ({
+    mainEntity: calculatorFaq.map((item) => ({
       "@type": "Question",
       name: item.question,
       acceptedAnswer: { "@type": "Answer", text: item.answer }
+    }))
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    name: `How to use the ${calculator.name}`,
+    description: calculator.summary,
+    step: pageContent.steps.map((step, index) => ({
+      "@type": "HowToStep",
+      position: index + 1,
+      text: step
     }))
   },
   {
@@ -74,16 +101,20 @@ const schema = [
         <h2>How to calculate it</h2>
         <p>The calculator applies the values you enter to this formula:</p>
         <div class="formula">{calculator.formula}</div>
+        <h3>How to use this calculator</h3>
+        <ol class="steps">{pageContent.steps.map((step) => <li>{step}</li>)}</ol>
         <h3>Worked example</h3>
         <p>{calculator.example}</p>
         <h3>Important assumptions</h3>
         <ul>{calculator.assumptions.map((assumption) => <li>{assumption}</li>)}</ul>
-        <p class="reviewed">Method reviewed June 9, 2026. Prices and rates are user-provided defaults and should be replaced with local values.</p>
+        <h3>Common mistakes to avoid</h3>
+        <ul>{pageContent.mistakes.map((mistake) => <li>{mistake}</li>)}</ul>
+        <p class="reviewed">Method reviewed June 10, 2026. Prices and rates are user-provided defaults and should be replaced with local values.</p>
       </article>
       <aside class="side-note">
         <span>Good to know</span>
-        <h3>Measure first, then add a realistic buffer.</h3>
-        <p>Small measurement errors can compound. Split irregular spaces into simple rectangles, calculate each one, and combine the results.</p>
+        <h3>{pageContent.tip.heading}</h3>
+        <p>{pageContent.tip.body}</p>
         <a href="/methodology/">Calculation methodology →</a>
       </aside>
     </div>
@@ -107,7 +138,7 @@ const schema = [
     <div class="container faq-grid">
       <div><p class="eyebrow">Common questions</p><h2>Frequently asked.</h2></div>
       <div>
-        {calculator.faq.map((item) => (
+        {calculatorFaq.map((item) => (
           <details>
             <summary>{item.question}<span>+</span></summary>
             <p>{item.answer}</p>
@@ -137,6 +168,9 @@ const schema = [
   .content-section { padding: 6rem 0; }
   .content-grid { align-items: start; display: grid; gap: 6rem; grid-template-columns: 1fr 320px; }
   .formula { background: var(--surface-2); border-left: 4px solid var(--accent); border-radius: 0 12px 12px 0; font-family: "Manrope"; font-weight: 700; line-height: 1.6; padding: 1.2rem; }
+  .steps { counter-reset: steps; list-style: none; padding: 0; }
+  .steps li { align-items: start; counter-increment: steps; display: grid; gap: 0.8rem; grid-template-columns: 30px 1fr; }
+  .steps li::before { align-items: center; background: var(--surface-2); border-radius: 50%; color: var(--ink); content: counter(steps); display: flex; font-size: 0.72rem; font-weight: 800; height: 30px; justify-content: center; width: 30px; }
   .reviewed { border-top: 1px solid var(--line); font-size: 0.78rem; margin-top: 2rem; padding-top: 1rem; }
   .side-note { background: var(--ink); border-radius: var(--radius); color: white; padding: 1.6rem; position: sticky; top: 100px; }
   .side-note > span { color: var(--brand); font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
