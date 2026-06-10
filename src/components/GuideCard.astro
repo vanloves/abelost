@@ -11,7 +11,7 @@ const { guide, compact = false } = Astro.props;
 const category = categoryMap[guide.category];
 ---
 
-<a class:list={["guide-card", "card", { compact }]} href={`/guides/${guide.slug}/`} style={`--accent:${category.accent}`}>
+<a class:list={["guide-card", "card", { compact }]} href={`/guides/${guide.slug}/`} style={`--accent:${category.accent};--accent-text:${category.textAccent}`}>
   <div class="guide-meta">
     <span>{category.shortName}</span>
     <small>{guide.readTime}</small>
@@ -35,7 +35,7 @@ const category = categoryMap[guide.category];
   }
   .guide-card:hover { box-shadow: var(--shadow); transform: translateY(-4px); }
   .guide-meta { align-items: center; display: flex; justify-content: space-between; }
-  .guide-meta span { color: var(--accent); font-size: 0.73rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; }
+  .guide-meta span { color: var(--accent-text); font-size: 0.73rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; }
   .guide-meta small { color: var(--muted); }
   h3 { font-size: 1.55rem; }
   p { font-size: 0.92rem; margin-bottom: 0; }

@@ -66,7 +66,7 @@ const featuredGuides = [
   <section class="category-strip">
     <div class="container category-grid">
       {categories.map((category, index) => (
-        <a href={`/${category.id}/`} style={`--accent:${category.accent}`}>
+        <a href={`/${category.id}/`} style={`--accent-text:${category.textAccent}`}>
           <span>{String(index + 1).padStart(2, "0")}</span>
           <div><strong>{category.shortName}</strong><small>{calculators.filter((tool) => tool.category === category.id).length} tools</small></div>
           <b>↗</b>
@@ -152,7 +152,7 @@ const featuredGuides = [
   .category-grid a { align-items: center; border-right: 1px solid var(--line); display: grid; gap: 0.75rem; grid-template-columns: auto 1fr auto; padding: 1.35rem; text-decoration: none; }
   .category-grid a:first-child { border-left: 1px solid var(--line); }
   .category-grid a:hover { background: var(--surface); }
-  .category-grid a > span { color: var(--accent); font-size: 0.72rem; font-weight: 800; }
+  .category-grid a > span { color: var(--accent-text); font-size: 0.72rem; font-weight: 800; }
   .category-grid strong, .category-grid small { display: block; }
   .category-grid small { color: var(--muted); font-size: 0.72rem; margin-top: 0.15rem; }
   .category-grid b { color: var(--muted); }

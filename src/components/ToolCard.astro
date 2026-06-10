@@ -12,7 +12,7 @@ const { tool, compact = false } = Astro.props;
 const category = categoryMap[tool.category];
 ---
 
-<a class:list={["tool-card", "card", { compact }]} href={`/calculators/${tool.slug}/`} style={`--accent:${category.accent}`}>
+<a class:list={["tool-card", "card", { compact }]} href={`/calculators/${tool.slug}/`} style={`--accent:${category.accent};--accent-text:${category.textAccent}`}>
   <div class="tool-top">
     <span class="tool-icon"><ToolIcon slug={tool.slug} /></span>
     <span class="arrow">↗</span>
@@ -31,7 +31,7 @@ const category = categoryMap[tool.category];
   .tool-icon { align-items: center; background: color-mix(in srgb, var(--accent) 23%, white); border: 1px solid color-mix(in srgb, var(--accent) 34%, white); border-radius: 13px; color: var(--ink); display: flex; height: 48px; justify-content: center; transition: background 160ms ease, transform 160ms ease; width: 48px; }
   .tool-card:hover .tool-icon { background: color-mix(in srgb, var(--accent) 38%, white); transform: rotate(-3deg) scale(1.04); }
   .arrow { color: var(--muted); font-size: 1.15rem; }
-  p { color: var(--accent); font-size: 0.74rem; font-weight: 800; letter-spacing: 0.08em; margin: 0 0 0.55rem; text-transform: uppercase; }
+  p { color: var(--accent-text); font-size: 0.74rem; font-weight: 800; letter-spacing: 0.08em; margin: 0 0 0.55rem; text-transform: uppercase; }
   h3 { margin-bottom: 0.55rem; }
   div > span { color: var(--muted); font-size: 0.9rem; line-height: 1.55; }
   .compact { min-height: 170px; }

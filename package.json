@@ -9,6 +9,7 @@
     "preview": "astro preview",
     "check": "astro check",
     "test": "vitest run",
+    "audit:site": "node scripts/audit-site.mjs",
     "deploy": "npm run build && wrangler deploy"
   },
   "dependencies": {

@@ -6,6 +6,7 @@ export interface Category {
   shortName: string;
   description: string;
   accent: string;
+  textAccent: string;
   icon: string;
 }
 

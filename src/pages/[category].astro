@@ -28,6 +28,7 @@ const tools = calculatorsByCategory(category.id);
   </header>
   <section class="section">
     <div class="container">
+      <h2 class="sr-only">{category.name} calculator tools</h2>
       <div class="grid grid--3">
         {tools.map((tool) => <ToolCard tool={tool} />)}
       </div>
@@ -47,7 +48,7 @@ const tools = calculatorsByCategory(category.id);
 <style>
   .category-hero { background: color-mix(in srgb, var(--accent) 20%, var(--paper)); padding: 6rem 0; }
   .hero-grid { align-items: end; display: grid; gap: 4rem; grid-template-columns: 1fr auto; }
-  .category-hero p:last-child { font-size: 1.1rem; max-width: 620px; }
+  .category-hero p:last-child { color: #4f5b56; font-size: 1.1rem; max-width: 620px; }
   .count-card { align-items: center; background: var(--ink); border-radius: var(--radius); color: white; display: flex; flex-direction: column; height: 190px; justify-content: center; width: 190px; }
   .count-card strong { color: var(--accent); font-family: "Manrope"; font-size: 4.2rem; letter-spacing: -0.08em; line-height: 1; }
   .count-card span { color: #aebbb5; font-size: 0.8rem; margin-top: 0.5rem; text-transform: uppercase; }

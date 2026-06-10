@@ -7,6 +7,7 @@ export const categories: Category[] = [
     shortName: "Home",
     description: "Estimate materials and budgets for renovation and building projects.",
     accent: "#ff7a59",
+    textAccent: "#9a3d28",
     icon: "⌂"
   },
   {
@@ -15,6 +16,7 @@ export const categories: Category[] = [
     shortName: "Yard",
     description: "Plan landscaping materials, lawn coverage, and outdoor projects.",
     accent: "#70c174",
+    textAccent: "#2f7138",
     icon: "◇"
   },
   {
@@ -23,6 +25,7 @@ export const categories: Category[] = [
     shortName: "Energy",
     description: "Understand electricity use, appliance costs, and charging expenses.",
     accent: "#f4bd4f",
+    textAccent: "#7a5600",
     icon: "ϟ"
   },
   {
@@ -31,6 +34,7 @@ export const categories: Category[] = [
     shortName: "Auto",
     description: "Compare fuel, mileage, trip, and vehicle ownership costs.",
     accent: "#65a7ff",
+    textAccent: "#245f9e",
     icon: "→"
   },
   {
@@ -39,6 +43,7 @@ export const categories: Category[] = [
     shortName: "Business",
     description: "Work through pricing, profitability, advertising, and freelance rates.",
     accent: "#b590ff",
+    textAccent: "#6942a6",
     icon: "%"
   }
 ];
